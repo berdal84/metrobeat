@@ -1,14 +1,25 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import { MetronomeView } from "./Metronome/MetronomeView"
 import packageJson from "../package.json"
+import { useCallback } from "react"
+
+const news = `
+    Quoi de neuf?
+    - correction de pb de son lors de perte de la recuperation du focus de la fenetre.
+  `
 
 function App() {
 
   const metronome = useMetronome()
+  const handleVersionClick = useCallback(() => {
+    alert(news)
+  }, [])
 
   return (
     <div className="App">
-      <h1 className="title">Métron<span style={{ color: "#bec6ffff" }}>ô</span>me<span className="version">v{packageJson.version}</span></h1>
+      <h1 className="title">
+        Métron<span style={{ color: "#bec6ffff" }}>ô</span>me
+        <span onClick={handleVersionClick} className="version">v{packageJson.version}</span></h1>
       <MetronomeView
         diodeOn={metronome.diodeOn}
         tempo={metronome.tempo}
