@@ -31,7 +31,7 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         _next_tick_delay: 0,
         _last_frame_time: 0,
         _shouldStop: false,
-        onChange: (state: MetroState) => {},
+        onChange: (_: MetroState) => {},
         onTick: () => {}
     }
 }

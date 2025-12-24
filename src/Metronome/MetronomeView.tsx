@@ -35,11 +35,11 @@ export function MetronomeView({
     onTempoChange( constrainAbove1(event.currentTarget.valueAsNumber) )
   }, [tempo])
 
-  const handleIncreaseTempo: MouseEventHandler<HTMLButtonElement> = useCallback( (event) => {
+  const handleIncreaseTempo: MouseEventHandler<HTMLButtonElement> = useCallback( (_) => {
     onTempoChange( constrainAbove1(tempo + 10) )
   }, [tempo])
 
-  const handleDecreaseTempo: MouseEventHandler<HTMLButtonElement> = useCallback( (event) => {
+  const handleDecreaseTempo: MouseEventHandler<HTMLButtonElement> = useCallback( (_) => {
     onTempoChange( constrainAbove1(tempo - 10) )
   }, [tempo])
 
