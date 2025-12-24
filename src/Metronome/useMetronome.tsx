@@ -33,5 +33,5 @@ export function useMetronome()
     metro_set_tempo(metronome, tempo)
   }, [metronome])
 
-  return { tempo, setTempo, isPlaying, play, stop, diodeOn }
+  return { tempo, setTempo, isPlaying, play, stop, diodeOn, metronome }
 }

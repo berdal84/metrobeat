@@ -19,7 +19,7 @@ body {
 
 .App {
   background: linear-gradient(45deg, #8f5757, #99a0ef);
-  max-width: 300px;
+  max-width: 600px;
   border-radius: var(--border-radius);
   text-align: center;
   box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
@@ -37,10 +37,11 @@ body {
     color: #e5beeebc;
     margin: unset;
   }
+
+  padding: 4px;
 }
 
 .buttons {
-  padding: 4px;
   display: flex;
   justify-content: space-between;
   column-gap: 4px;
@@ -92,4 +93,28 @@ input {
 .version {
   font-size: 0.4em;
   margin-left: 5px;
+}
+
+.divider {
+  height: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.286);
+}
+
+.tempo {
+  display: flex;
+}
+
+.tempos {
+  display: grid;
+  columns: 2;
+  justify-items: start;
+  gap: 4px;
+}
+
+.variation {
+  display: flex;
+  align-items: start;
+  gap: 5px;
+  flex-direction: column;
 }

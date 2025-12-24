@@ -27,10 +27,10 @@ export function Tempo({
   }, [tempo])
 
   return (
-    <>
+    <div className="tempo">
         <button onClick={handleDecreaseTempo}>-</button>
         <input onChange={handleTempoInputChange} type="number" step={1} min={60} max={300} value={tempo}/>
         <button onClick={handleIncreaseTempo}>+</button>        
-    </>
+    </div>
   )
 }
