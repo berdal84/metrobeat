@@ -1,5 +1,6 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import { MetronomeView } from "./Metronome/MetronomeView"
+import packageJson from "../package.json"
 
 function App() {
 
@@ -7,7 +8,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="title">Métron<span style={{ color: "#bec6ffff" }}>ô</span>me</h1>
+      <h1 className="title">Métron<span style={{ color: "#bec6ffff" }}>ô</span>me<span className="version">v{packageJson.version}</span></h1>
       <MetronomeView
         diodeOn={metronome.diodeOn}
         tempo={metronome.tempo}

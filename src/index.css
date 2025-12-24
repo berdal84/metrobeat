@@ -88,3 +88,8 @@ input {
   width: 100%;
   text-align: left;
 }
+
+.version {
+  font-size: 0.4em;
+  margin-left: 5px;
+}
