@@ -1,0 +1,25 @@
+#root {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: nter;
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+
+}
+
+button {
+  padding: 10px;
+  min-width: 50px;
+  background-color:black;
+  color: white;
+  border-radius: 0;
+}
+
+input {
+  background-color: #fefefe;
+}
