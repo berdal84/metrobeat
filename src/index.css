@@ -85,7 +85,6 @@ section.variation {
   }
 }
 
-
 button {
   height: 40px;
   display: flex;
@@ -167,6 +166,11 @@ label {
     border-radius: unset;
     border-left: unset;
     border-right: unset;
+  }
+
+  .unit {
+    padding: 2px;
+    background-color: white;
   }
 
   :last-child {
