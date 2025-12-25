@@ -12,16 +12,18 @@ export type MetroState = {
     requestAnimationFrameId: number;
     period: number;
     variationOn: boolean;
+    variationDuration: number;
     diodeOn: boolean;
 }
 
-export type MetroEventChange = Partial<Pick<MetroState, 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'variationOn' |'diodeOn'>>
+export type MetroEventChange = Partial<Pick<MetroState, 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'variationOn' |'diodeOn' | 'variationDuration'>>
 
 export type MetroInitialState = {
     tempo: number;
     isPlaying: boolean;
     tempoBegin: number;
     tempoEnd: number;
+    variationDuration: number;
 }
 
 export function metro_create( initialState: Partial<MetroInitialState> = {} ): MetroState
@@ -33,18 +35,20 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
     })
 
     const state: MetroState = {
-        tempo: initialState?.tempo ?? 80,
-        tempoBegin: initialState?.tempoBegin ?? 80,
-        tempoEnd: initialState?.tempoEnd ?? 120,
+        tempo: 80,
+        tempoBegin: 80,
+        tempoEnd: 120,
         variationOn: false,
-        isPlaying: initialState?.isPlaying ?? false,
-        sound: sound,
+        isPlaying: false,
+        sound,
         next_tick_delay: 0,
         last_frame_time: 0,
         requestAnimationFrameId: 0,
         onChange: (_: Partial<MetroEventChange>) => {},
         period: 0,
-        diodeOn: false
+        diodeOn: false,
+        variationDuration: 0,
+        ...initialState
     }
 
 
@@ -122,7 +126,7 @@ export function metro_update(state: MetroState, dt: number)
 
         // TODO: precompute once?
         const bpmRange = state.tempoEnd-state.tempoBegin
-        const bpmToAddPerMs = bpmRange / 60_000;
+        const bpmToAddPerMs = bpmRange / (state.variationDuration * 1000);
 
         metro_set_tempo(state, state.tempo + bpmToAddPerMs * dt )
     }
@@ -170,4 +174,10 @@ export function metro_toggle_variation(state: MetroState)
 {
     state.variationOn = ! state.variationOn
     metro_emit_change(state, { variationOn: state.variationOn })
+}
+
+export function metro_set_variation_duration(state: MetroState, variationDuration: number)
+{
+    state.variationDuration = variationDuration
+    metro_emit_change(state, { variationDuration: state.variationDuration })
 }

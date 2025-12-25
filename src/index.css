@@ -31,7 +31,7 @@ p, h1, h2, h3, h4, h5, h6 {
 .App {
   background: linear-gradient(45deg, #8f5757, #99a0ef);
   max-width: 90vw;
-  min-width: 500px;
+  min-width: 200px;
   border-radius: var(--border-radius);
   text-align: center;
   box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
@@ -64,20 +64,20 @@ section {
 
 section.controls {
   display: flex;
-  align-items: end;
-  gap: var(--gap-3)
+  gap: var(--gap-3);
 }
 
 section.variation {
-  display: flex;
-  gap: var(--gap-1);
-  justify-content: space-between;
+  display: grid;
+  gap: var(--gap-3);
   align-items: start;
+  grid-template-columns: 1fr ;
 }
 
 .TempoInputRange {
 
   display: flex;
+  flex-direction: column;
   gap: var(--gap-3);
 
   .TempoInput {

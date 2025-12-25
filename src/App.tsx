@@ -16,8 +16,9 @@ function App() {
     viewState,
     stop, play,
     setTempo, setTempoBegin, setTempoEnd,
-    toggleVariation
-  } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120});
+    toggleVariation,
+    setVariationDuration
+  } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, variationDuration: 60});
 
   const handleVersionClick = useCallback(() => {
     alert(news)
@@ -52,10 +53,8 @@ function App() {
             {viewState.isPlaying ? 'STOP' : 'PLAY'}
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
-          <div inert={viewState.variationOn}>
-            { viewState.variationOn && <label>BPM (courant)</label>}
-            <TempoInput tempo={viewState.tempo} onTempoChange={setTempo}/>
-          </div>
+            { viewState.variationOn && viewState.isPlaying && <label>Actuel: {viewState.tempo} bpm</label>}
+            { !viewState.variationOn && <TempoInput tempo={viewState.tempo} onTempoChange={setTempo}/>}
         </section>
 
         <section className="variation">
@@ -68,8 +67,9 @@ function App() {
             Mode Crescendo
           </label>
           { viewState.variationOn && <div className="TempoInputRange">
-            <div><label>BPM (départ)</label><TempoInput tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/></div>
-            <div><label>BPM (arrivée)</label><TempoInput  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/></div>
+            <div><label>BPM de début:</label><TempoInput tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/></div>
+            <div><label>BPM de fin:</label><TempoInput  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/></div>
+            <div><label>Durée en sec:</label><TempoInput  tempo={viewState.variationDuration} onTempoChange={setVariationDuration}/></div>
           </div>}
         </section>
 

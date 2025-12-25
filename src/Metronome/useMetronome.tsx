@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
-import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState } from "./Metronome";
+import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState, metro_set_variation_duration } from "./Metronome";
 
 // State with the field we might want to display
 type MetroViewState = Pick<
@@ -9,7 +9,8 @@ type MetroViewState = Pick<
   'tempo' | 
   'variationOn' | 
   'tempoBegin' | 
-  'tempoEnd'
+  'tempoEnd' |
+  'variationDuration'
 >
 
 const DEFAULT_VIEW_STATE: MetroViewState = {
@@ -17,7 +18,8 @@ const DEFAULT_VIEW_STATE: MetroViewState = {
     tempo: -1,
     tempoBegin: -1, tempoEnd: -1,
     variationOn: false,
-    diodeOn: false
+    diodeOn: false,
+    variationDuration: 60,
 }
 
 // Headless metronome
@@ -32,13 +34,15 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
   const setTempo = useCallback( (value: number) => metro_set_tempo(metronome, value), [] )
   const play     = useCallback( () => metro_play(metronome), [] )
   const stop     = useCallback( () => metro_stop(metronome), [] )
+  const setVariationDuration = useCallback( (value: number) => {
+    metro_set_variation_duration(metronome, value);
+  }, [])
 
   useEffect(() => {
 
     // TODO: this could be an event emitted by the metronome, like onInit()
-    const { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn } = metronome;
-    const initialViewState = { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn }
-    setViewState(initialViewState)
+    const { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration } = metronome;
+    setViewState({ isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration })
 
     metronome.onChange = (changes: MetroEventChange) => {
       console.log('State changes:', changes)
@@ -58,6 +62,7 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
     setTempoBegin,
     setTempoEnd,
     play,
-    stop
+    stop,
+    setVariationDuration
   }
 }
