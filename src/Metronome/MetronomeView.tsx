@@ -30,11 +30,14 @@ export function MetronomeView({
 
   return (
     <div className="buttons">
-        <button className='playButton' onClick={handlePlayButtonClick}>
+        <button className='playButton' style={{ marginTop: 'auto'}} onClick={handlePlayButtonClick}>
           {isPlaying ? 'STOP' : 'PLAY'}
           <div style={{ opacity: diodeOn ? 1 : 0.4 }} className='diode'/>
         </button>
-        <Tempo tempo={tempo} onTempoChange={onTempoChange} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+          <label>BPM</label>
+          <Tempo tempo={tempo} onTempoChange={onTempoChange} />
+        </div>
     </div>
   )
 }

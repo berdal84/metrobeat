@@ -1,53 +1,32 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import { MetronomeView } from "./Metronome/MetronomeView"
 import packageJson from "../package.json"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { Tempo } from "./Metronome/Tempo"
 
 const news = `
     Quoi de neuf?
-    - bug connu: il faut cliquer deux fois sur play en mode variation.
+    - correction de bugs mode variation: play échoue 1ere fois, perte de valeur de tempo.
     - debut de la fonctionnalite de variation (sur une minute pour l'instant)
     - correction de pb de son lors de perte de la recuperation du focus de la fenetre.
   `
 
 function App() {
 
-  const { stop, play, tempo, setTempo, diodeOn, isPlaying, metronome } = useMetronome()
+  const {
+    viewState,
+    stop, play,
+    setTempo, setTempoBegin, setTempoEnd,
+    toggleVariation
+  } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120});
+
   const handleVersionClick = useCallback(() => {
     alert(news)
   }, [])
 
-  const [variationOn, setVariation] = useState(false);
-  const [tempoBegin, setTempoBegin] = useState(60)
-  const [tempoEnd, setTempoEnd] = useState(120)
-
-  const handlePlay = useCallback( () => {
-    
-    if (!variationOn)
-      return play()
-    
-    const variationLoop = (amount: number, speed: number) => {
-
-      if (!metronome.isPlaying)
-        return
-      
-      if ( metronome._tempo >= tempoEnd )
-      {
-          stop()
-          return;
-      }
-
-      setTempo( metronome._tempo + amount)
-
-      setTimeout( () => variationLoop(amount, speed), speed)
-    }
-
-    setTempo(tempoBegin)
-    play()
-    variationLoop( (tempoEnd-tempoBegin) / 60, 1000 )
-
-  }, [metronome, variationOn, tempoBegin, tempoEnd])
+  useEffect( () => {
+    console.log("useEffect's viewState:", viewState);
+  }, [viewState.isPlaying])
 
   return (
     <div className="App">
@@ -55,11 +34,11 @@ function App() {
         Métron<span style={{ color: "#bec6ffff" }}>ô</span>me
         <span onClick={handleVersionClick} className="version">v{packageJson.version}</span></h1>
       <MetronomeView
-        diodeOn={diodeOn}
-        tempo={tempo}
-        isPlaying={isPlaying}
+        diodeOn={viewState.diodeOn}
+        tempo={viewState.tempo}
+        isPlaying={viewState.isPlaying}
         onTempoChange={setTempo}
-        onPlayPressed={handlePlay}
+        onPlayPressed={play}
         onStopPressed={stop}
       />
 
@@ -69,15 +48,15 @@ function App() {
         <label>
         <input
           type="checkbox"
-          checked={variationOn}
-          onChange={(event) => { setVariation(event.currentTarget.checked)}}
+          checked={viewState.variationOn}
+          onChange={toggleVariation}
         />
           Variation ON
         </label>
-        { variationOn && <div className="tempos">
+        { viewState.variationOn && <div className="tempos">
           <p>(Sur une duree d'1 min pour le moment...)</p>
-          <label>Tempo (begin)</label><Tempo tempo={tempoBegin} onTempoChange={setTempoBegin}/>
-          <label>Tempo (end)</label><Tempo  tempo={tempoEnd} onTempoChange={setTempoEnd}/>
+          <label>BPM (départ)</label><Tempo tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/>
+          <label>BPM (arrivée)</label><Tempo  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/>
         </div>}
       </div>
       <div className="divider"/>
