@@ -1,8 +1,7 @@
 import { useMetronome } from "./Metronome/useMetronome"
-import { MetronomeView } from "./Metronome/MetronomeView"
 import packageJson from "../package.json"
-import { useCallback, useEffect } from "react"
-import { Tempo } from "./Metronome/Tempo"
+import { useCallback, useEffect, type MouseEventHandler } from "react"
+import { TempoInput } from "./Metronome/TempoInput"
 
 const news = `
     Quoi de neuf?
@@ -24,43 +23,60 @@ function App() {
     alert(news)
   }, [])
 
+  const handlePlayButtonClick: MouseEventHandler<HTMLButtonElement> = useCallback((_) => {
+    if (viewState.isPlaying) {
+      stop()
+    } else {
+      play()
+    }
+  }, [viewState.isPlaying])
+
   useEffect( () => {
     console.log("useEffect's viewState:", viewState);
   }, [viewState.isPlaying])
 
   return (
     <div className="App">
-      <h1 className="title">
-        Métron<span style={{ color: "#bec6ffff" }}>ô</span>me
-        <span onClick={handleVersionClick} className="version">v{packageJson.version}</span></h1>
-      <MetronomeView
-        diodeOn={viewState.diodeOn}
-        tempo={viewState.tempo}
-        isPlaying={viewState.isPlaying}
-        onTempoChange={setTempo}
-        onPlayPressed={play}
-        onStopPressed={stop}
-      />
 
-      <div className="divider"/>
-      
-      <div className="variation">
-        <label>
-        <input
-          type="checkbox"
-          checked={viewState.variationOn}
-          onChange={toggleVariation}
-        />
-          Variation ON
-        </label>
-        { viewState.variationOn && <div className="tempos">
-          <p>(Sur une duree d'1 min pour le moment...)</p>
-          <label>BPM (départ)</label><Tempo tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/>
-          <label>BPM (arrivée)</label><Tempo  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/>
-        </div>}
-      </div>
-      <div className="divider"/>
-      <p className="description">"Le" métronome qui sait se distinguer.</p>
+      <header>
+        Métron<span style={{ color: "#bec6ffff" }}>ô</span>me
+        <span onClick={handleVersionClick} className="version">v{packageJson.version}</span>
+      </header>
+
+      <main>
+
+        <section className="controls">
+          <button className='playButton' style={{ marginTop: 'auto'}}
+            onClick={handlePlayButtonClick}
+          >
+            {viewState.isPlaying ? 'STOP' : 'PLAY'}
+            <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
+          </button>
+          <div inert={viewState.variationOn}>
+            { viewState.variationOn && <label>BPM (courant)</label>}
+            <TempoInput tempo={viewState.tempo} onTempoChange={setTempo}/>
+          </div>
+        </section>
+
+        <section className="variation">
+          <label>
+            <input
+              type="checkbox"
+              checked={viewState.variationOn}
+              onChange={toggleVariation}
+            />
+            Mode Crescendo
+          </label>
+          { viewState.variationOn && <div className="TempoInputRange">
+            <div><label>BPM (départ)</label><TempoInput tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/></div>
+            <div><label>BPM (arrivée)</label><TempoInput  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/></div>
+          </div>}
+        </section>
+
+      </main>
+
+      <footer className="description">"Le" métronome qui sait se distinguer.</footer>
+
     </div>
   )
 }

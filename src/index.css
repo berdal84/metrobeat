@@ -1,60 +1,100 @@
-* {
-  font-family: unset;
-}
 
 html, body {
   font-family: monospace;
   height: 100%;
   margin: 0;
   background-color: #3d3d3f;
-  color: rgb(31, 24, 24);
+  --bg-color-primary: rgba(34, 35, 47, 0.939);
+  --bg-color-secondary: rgba(34, 35, 47, 0.939);
   --border-radius: 5px;
+  --border-color-primary: rgb(87, 7, 75);
+  --border-color-secondary: rgba(251, 167, 252, 0.91);
+  --text-primary: rgb(31, 24, 24) ;
+  --text-seconday: #fff;
+  --gap-1: 2px;
+  --gap-2: 4px;
+  --gap-3: 16px;
 }
 
 body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  padding: unset;
+  margin: unset;
 }
 
 .App {
   background: linear-gradient(45deg, #8f5757, #99a0ef);
-  max-width: 600px;
+  max-width: 90vw;
+  min-width: 500px;
   border-radius: var(--border-radius);
   text-align: center;
   box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
   overflow: hidden;
-  border: 1px solid rgb(87, 7, 75);
-
+  border: 1px solid var(--border-color-primary);
   display: flex;
   flex-direction: column;
   gap: 5px;
-  
-  .title {
-    background-color: #41072e61;
-    font-size: 25pt;
-    text-shadow: 0px 1px 5px rgba(51, 4, 22, 0.619);
-    color: #e5beeebc;
-    margin: unset;
-  }
-
   padding: 4px;
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  column-gap: 4px;
+header {
+  background-color: #41072e61;
+  font-size: 25pt;
+  text-shadow: 0px 1px 5px rgba(51, 4, 22, 0.619);
+  color: #e5beeebc;
+  margin: unset;
 }
 
+[inert] {
+  /* visibility: hidden; */
+  opacity: 0.5;
+}
+
+section {
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-color-primary);
+  margin-bottom: 5px;
+}
+
+section.controls {
+  display: flex;
+  align-items: end;
+  gap: var(--gap-3)
+}
+
+section.variation {
+  display: flex;
+  gap: var(--gap-1);
+  justify-content: space-between;
+  align-items: start;
+}
+
+.TempoInputRange {
+
+  display: flex;
+  gap: var(--gap-3);
+
+  .TempoInput {
+    margin-top: var(--gap-2);
+  }
+}
+
+
 button {
-  padding: 10px;
-  min-width: 50px;
-  background-color:rgba(34, 35, 47, 0.939);
-  color: white;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-color-secondary);
+  color: var(--text-seconday);
   border-radius: var(--border-radius);
   font-size: larger;
-  border: 1px solid rgba(251, 167, 252, 0.91);
+  border: 1px solid var(--border-color-secondary);
 }
 
 input {
@@ -63,6 +103,17 @@ input {
   font-size: 15pt;
   max-width: 4rem;
   padding-left: 0.5rem;
+  border: 1px solid rgba(251, 167, 252, 0.91);
+}
+
+label {
+  display: flex;
+  align-items: center;
+}
+
+.tempo-range {
+  display: flex;
+  gap: var(--gap-3)
 }
 
 .playButton {
@@ -85,7 +136,6 @@ input {
 .description {
   margin: unset;
   padding: 3px;
-  color: rgba(26, 4, 19, 0.6);
   width: 100%;
   text-align: left;
 }
@@ -101,20 +151,27 @@ input {
   border-top: 1px solid rgba(0, 0, 0, 0.286);
 }
 
-.tempo {
+.TempoInput {
   display: flex;
+
+  button {
+    min-width: 3rem;
+  }
+
+  :first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  input {
+    border-radius: unset;
+    border-left: unset;
+    border-right: unset;
+  }
+
+  :last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 }
 
-.tempos {
-  display: grid;
-  columns: 2;
-  justify-items: start;
-  gap: 4px;
-}
-
-.variation {
-  display: flex;
-  align-items: start;
-  gap: 5px;
-  flex-direction: column;
-}

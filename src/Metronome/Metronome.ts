@@ -3,7 +3,6 @@ import { Howl } from 'howler'
 export type MetroState = {
     isPlaying: boolean;
     onChange: (change: Partial<MetroEventChange>) => void;
-    onTick: () => void;
     tempo: number;
     tempoBegin: number;
     tempoEnd: number;
@@ -44,7 +43,6 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         last_frame_time: 0,
         requestAnimationFrameId: 0,
         onChange: (_: Partial<MetroEventChange>) => {},
-        onTick: () => {},
         period: 0,
         diodeOn: false
     }
