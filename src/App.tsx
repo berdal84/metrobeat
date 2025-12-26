@@ -6,12 +6,10 @@ import { TempoInput } from "./Metronome/TempoInput"
 // TODO LIST
 //
 // ## Corriger bugs:
-// - [ ] accererando: contraindre le BPM entre [BPM début, BPM fin] à tout instant. Ne doit jamais aller au delà du max, en deçà du min.
 //
 // ## Fonctionnalités:
 // - [ ] limiter BPM entre 10 et 300 sur l'interface graphique.
 // - [ ] modes: utiliser les mots "régulier", "accererando", "zigzag" (en groupe de boutons toggle)
-// - [ ]  accererando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
 // - [ ] tempo: deux boutons (+/-1, +/- 10)
 // - [ ] volume: slider horizontal 
 //
@@ -26,6 +24,8 @@ import { TempoInput } from "./Metronome/TempoInput"
 
 const news = `
     Quoi de neuf?
+    - accelerando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
+    - accererando/yoyo: contraindre le BPM entre [BPM début, BPM fin] à tout instant.
     - ajout du mode yoyo.
     - correction de bugs mode variation: play échoue 1ere fois, perte de valeur de tempo.
     - debut de la fonctionnalite de variation (sur une minute pour l'instant)

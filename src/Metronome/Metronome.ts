@@ -112,6 +112,14 @@ export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tem
     if ( Math.abs(diffAsIntegers) > 0 ) state.onChange({ [slot]: Math.round(new_tempo) })
 }
 
+function clamp(value: number, min: number, max: number): number
+{
+    console.assert( min < max, "min should be strictly lower than max", min, max)
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
 export function metro_update(state: MetroState, dt: number)
 {
     // skip any update that took too much time
@@ -124,27 +132,20 @@ export function metro_update(state: MetroState, dt: number)
     if ( state.variationOn )
     {
         let reachedBoundary =
-            ( state.variationDirection > 0 && state.tempoEnd - state.tempo < 0 ) ||
-            ( state.variationDirection < 0 && state.tempo - state.tempoBegin < 0 ) 
+            ( state.variationDirection > 0 && state.tempoEnd - state.tempo <= 0 ) ||
+            ( state.variationDirection < 0 && state.tempo - state.tempoBegin <= 0 ) 
 
-        if ( reachedBoundary )
+        if ( reachedBoundary && state.yoyo)
         {
-            if (state.yoyo)
-            {
-                state.variationDirection = -state.variationDirection;
-            }
-            else
-            {
-                metro_stop(state)
-                return;
-            }
+            state.variationDirection = -state.variationDirection;
         }
 
         // TODO: precompute once?
         const bpmRange = (state.tempoEnd-state.tempoBegin) * state.variationDirection;
         const bpmToAddPerMs = bpmRange / (state.variationDuration * 1000);
+        const newTempo = clamp(state.tempo + bpmToAddPerMs * dt, state.tempoBegin, state.tempoEnd)
 
-        metro_set_tempo(state, state.tempo + bpmToAddPerMs * dt )
+        metro_set_tempo(state, newTempo );
     }
     
     if ( state.next_tick_delay > dt)
