@@ -5,6 +5,7 @@ import { TempoInput } from "./Metronome/TempoInput"
 
 const news = `
     Quoi de neuf?
+    - ajout du mode yoyo.
     - correction de bugs mode variation: play échoue 1ere fois, perte de valeur de tempo.
     - debut de la fonctionnalite de variation (sur une minute pour l'instant)
     - correction de pb de son lors de perte de la recuperation du focus de la fenetre.
