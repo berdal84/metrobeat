@@ -73,7 +73,6 @@ function App() {
             {viewState.isPlaying ? 'STOP' : 'PLAY'}
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
-          { viewState.variationOn && viewState.isPlaying && <p>Actuel: {viewState.tempo} bpm</p>}
 
           <div>
             <label>

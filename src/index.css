@@ -76,7 +76,7 @@ header {
 
 [inert] {
   /* visibility: hidden; */
-  opacity: 0.5;
+  filter: contrast(0.5);
 }
 
 section {
