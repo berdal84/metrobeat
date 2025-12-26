@@ -3,6 +3,27 @@ import packageJson from "../package.json"
 import { useCallback, useEffect, type MouseEventHandler } from "react"
 import { TempoInput } from "./Metronome/TempoInput"
 
+// TODO LIST
+//
+// ## Corriger bugs:
+// - [ ] accererando: contraindre le BPM entre [BPM début, BPM fin] à tout instant. Ne doit jamais aller au delà du max, en deçà du min.
+//
+// ## Fonctionnalités:
+// - [ ] limiter BPM entre 10 et 300 sur l'interface graphique.
+// - [ ] modes: utiliser les mots "régulier", "accererando", "zigzag" (en groupe de boutons toggle)
+// - [ ]  accererando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
+// - [ ] tempo: deux boutons (+/-1, +/- 10)
+// - [ ] volume: slider horizontal 
+//
+// ## Secondaire:
+// - [ ] valeur note du 1er temps: [-1 Octave, 0, +1 Octave] (Cad freq x1/2 ou x2).
+// - [ ] Nombre de temp(s): 1, 2, 3, 4, 5, 6, 7, 8 (options buttons)
+//
+// ## Idées:
+// - Sauvegarde/Chargement automatique des valeurs de l'interface et Bouton de réinitialisation des valeurs l'interface.
+// - S'assurer que l'interface utilise tout l'écran sur smartphone.
+// - S'assurer que l'interface fonctionne en mode portrait ET paysage.
+
 const news = `
     Quoi de neuf?
     - ajout du mode yoyo.
