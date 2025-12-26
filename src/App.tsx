@@ -1,6 +1,6 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
-import { useCallback, useEffect, useState, type MouseEventHandler, type ReactNode } from "react"
+import { useCallback, useEffect, type MouseEventHandler, type ReactNode } from "react"
 import { ValueInputField } from "./ValueInputField"
 import type { Mode } from "./Metronome/Metronome"
 
