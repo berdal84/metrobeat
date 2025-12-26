@@ -66,17 +66,15 @@ function App() {
       <main>
 
         <section className="controls">
+
           <button className='playButton' style={{ marginTop: 'auto'}}
             onClick={handlePlayButtonClick}
           >
             {viewState.isPlaying ? 'STOP' : 'PLAY'}
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
-            { viewState.variationOn && viewState.isPlaying && <p>Actuel: {viewState.tempo} bpm</p>}
-            { !viewState.variationOn && <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>}
-        </section>
+          { viewState.variationOn && viewState.isPlaying && <p>Actuel: {viewState.tempo} bpm</p>}
 
-        <section className="variation" inert={viewState.isPlaying}>
           <div>
             <label>
               <input
@@ -91,7 +89,15 @@ function App() {
                 Boucler à l'infini
             </label>}
           </div>
+        </section>
 
+
+
+        <div hidden={viewState.variationOn}>
+          <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
+        </div>
+
+        <section className="variation" inert={viewState.isPlaying}>
           <div className="TempoInputRange" hidden={!viewState.variationOn}>
             <div className="ValueInputField-group">
               <label className="ValueInputField-label">Tempo de départ</label>
