@@ -12,7 +12,7 @@ html, body {
   --border-color-primary: rgb(87, 7, 75);
   --border-color-secondary: rgba(251, 167, 252, 0.91);
   --text-primary: rgb(31, 24, 24) ;
-  --text-seconday: #fff;
+  --text-secondary: #fff;
   --gap-1: 2px;
   --gap-2: 4px;
   --gap-3: 16px;
@@ -96,7 +96,7 @@ button {
   display: flex;
   align-items: center;
   background-color: var(--btn-color);
-  color: var(--text-seconday);
+  color: var( --text-secondary);
   border-radius: var(--border-radius);
   font-size: larger;
   border: 1px solid var(--border-color-secondary);
@@ -116,6 +116,11 @@ input {
 }
 
 label {
+  display: flex;
+  align-items: center;
+}
+
+.d-flex {
   display: flex;
   align-items: center;
 }
@@ -166,8 +171,9 @@ section.variation {
   }
 }
 
-.FormGroup .off {
-  opacity: 0.5;
+button.unselected {
+  border-bottom: 3px solid var(--bg-color-secondary);
+  filter: brightness(85%);
 }
 
 .tempo-range {

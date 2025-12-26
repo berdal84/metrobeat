@@ -1,6 +1,6 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
-import { useCallback, useEffect, useState, type MouseEventHandler } from "react"
+import { useCallback, useEffect, useState, type MouseEventHandler, type ReactNode } from "react"
 import { ValueInputField } from "./ValueInputField"
 import type { Mode } from "./Metronome/Metronome"
 
@@ -9,7 +9,6 @@ import type { Mode } from "./Metronome/Metronome"
 // ## Corriger bugs:
 //
 // ## Fonctionnalités:
-// - [ ] modes: utiliser les mots "régulier", "accererando", "zigzag" (en groupe de boutons toggle)
 // - [ ] volume: slider horizontal 
 //
 // ## Secondaire:
@@ -23,16 +22,38 @@ import type { Mode } from "./Metronome/Metronome"
 
 const news = `
     Quoi de neuf?
+    - modes: utiliser les mots "régulier", "accelerando", "zigzag" (en groupe de boutons toggle)
     - tempo: deux boutons (+/-1, +/- 10)
     - limiter BPM entre 10 et 300 sur l'interface graphique.
     - accelerando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
     - accererando/yoyo: contraindre le BPM entre [BPM début, BPM fin] à tout instant.
   `
 
-const MODES: Array<{value: Mode, label: string}> = [
-  { value: "normal", label: "régulier" },
-  { value: "grow", label: "interpoler" },
-  { value: "yoyo", label: "yoyo" },
+const MODES: Array<{ value: Mode, label: ReactNode }> = [
+  {
+    value: "normal",
+    label: "Régulier"
+  },
+  {
+    value: "grow",
+    label:
+      <div className="d-flex">
+        <svg width="1rem" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75 12 3m0 0 3.75 3.75M12 3v18" />
+        </svg>
+        <span>Interpolé</span>
+      </div>
+  },
+  {
+    value: "yoyo",
+    label:
+      <div className="d-flex">
+        <svg width="1rem" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+        </svg>
+        <span>Yoyo</span>
+      </div>
+  },
 ]
 
 function App() {
@@ -83,8 +104,8 @@ function App() {
           <div className="FormGroup modes" inert={viewState.isPlaying}>
             {MODES.map( (item, i) => {
               return <button
-                key={i} name="mode"
-                className={ item.value == viewState.mode ? 'on' : 'off'}
+                key={i}
+                className={item.value == viewState.mode ? 'selected' : 'unselected'}
                 onClick={(_) => setMode(item.value)}
               >
                 {item.label}
@@ -112,7 +133,7 @@ function App() {
           </div>
 
           <div className="ValueInputField-group" hidden={viewState.mode == "normal"}>
-            <label className="ValueInputField-label">Durée d'interpolation</label>
+            <label className="ValueInputField-label">{ viewState.mode == "yoyo" ? "Demi-période" : "Période"} </label>
             <ValueInputField 
               tempo={viewState.period}
               onTempoChange={setPeriod}
