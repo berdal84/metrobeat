@@ -1,7 +1,8 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
-import { useCallback, useEffect, type MouseEventHandler } from "react"
+import { useCallback, useEffect, useState, type MouseEventHandler } from "react"
 import { ValueInputField } from "./ValueInputField"
+import type { Mode } from "./Metronome/Metronome"
 
 // TODO LIST
 //
@@ -28,16 +29,21 @@ const news = `
     - accererando/yoyo: contraindre le BPM entre [BPM début, BPM fin] à tout instant.
   `
 
+const MODES: Array<{value: Mode, label: string}> = [
+  { value: "normal", label: "régulier" },
+  { value: "grow", label: "interpoler" },
+  { value: "yoyo", label: "yoyo" },
+]
+
 function App() {
 
   const {
     viewState,
     stop, play,
     setTempo, setTempoBegin, setTempoEnd,
-    toggleVariation,
-    setVariationDuration,
-    toggleYoyo
-  } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, variationDuration: 60});
+    setPeriod,
+    setMode,
+  } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, period: 60});
 
   const handleVersionClick = useCallback(() => {
     alert(news)
@@ -74,30 +80,27 @@ function App() {
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
 
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={viewState.variationOn}
-                onChange={toggleVariation}
-              />
-              Interpoler le tempo
-            </label>
-            { viewState.variationOn && <label>
-              <input type="checkbox" checked={viewState.yoyo} onChange={toggleYoyo}/>
-                Boucler à l'infini
-            </label>}
+          <div className="FormGroup modes" inert={viewState.isPlaying}>
+            {MODES.map( (item, i) => {
+              return <button
+                key={i} name="mode"
+                className={ item.value == viewState.mode ? 'on' : 'off'}
+                onClick={(_) => setMode(item.value)}
+              >
+                {item.label}
+              </button>
+            })}
           </div>
         </section>
 
 
 
-        <div hidden={viewState.variationOn}>
+        <div hidden={viewState.mode != "normal"}>
           <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
         </div>
 
         <section className="variation" inert={viewState.isPlaying}>
-          <div className="TempoInputRange" hidden={!viewState.variationOn}>
+          <div className="TempoInputRange" hidden={viewState.mode == "normal"}>
             <div className="ValueInputField-group">
               <label className="ValueInputField-label">Tempo de départ</label>
               <ValueInputField tempo={viewState.tempoBegin} onTempoChange={setTempoBegin} unit="bpm"/>
@@ -108,11 +111,11 @@ function App() {
             </div>
           </div>
 
-          <div className="ValueInputField-group" hidden={!viewState.variationOn}>
+          <div className="ValueInputField-group" hidden={viewState.mode == "normal"}>
             <label className="ValueInputField-label">Durée d'interpolation</label>
             <ValueInputField 
-              tempo={viewState.variationDuration}
-              onTempoChange={setVariationDuration}
+              tempo={viewState.period}
+              onTempoChange={setPeriod}
               min={1} max={10*60} unit="sec"
             />
           </div>

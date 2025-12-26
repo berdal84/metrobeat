@@ -1,6 +1,8 @@
 import { Howl } from 'howler'
 import { clamp } from '../tools';
 
+export type  Mode = "normal" | "grow" | "yoyo";
+
 export type MetroState = {
     isPlaying: boolean;
     onChange: (change: Partial<MetroEventChange>) => void;
@@ -12,24 +14,14 @@ export type MetroState = {
     next_tick_delay: DOMHighResTimeStamp;
     requestAnimationFrameId: number;
     period: number;
-    variationOn: boolean;
-    variationDuration: number;
-    diodeOn: boolean;
-    yoyo: boolean;
+    mode: Mode;
     variationDirection: number;
+    diodeOn: boolean;
 }
 
-export type MetroEventChange = Partial<Pick<MetroState, 'yoyo'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'variationOn' |'diodeOn' | 'variationDuration'>>
+export type MetroEventChange = Partial<Pick<MetroState, 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
 
-export type MetroInitialState = {
-    tempo: number;
-    isPlaying: boolean;
-    tempoBegin: number;
-    tempoEnd: number;
-    variationDuration: number;
-    yoyo: boolean;
-}
-
+export type MetroInitialState = MetroEventChange;
 export function metro_create( initialState: Partial<MetroInitialState> = {} ): MetroState
 {
 
@@ -42,7 +34,6 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         tempo: 80,
         tempoBegin: 80,
         tempoEnd: 120,
-        variationOn: false,
         isPlaying: false,
         sound,
         next_tick_delay: 0,
@@ -51,14 +42,10 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         onChange: (_: Partial<MetroEventChange>) => {},
         period: 0,
         diodeOn: false,
-        variationDuration: 0,
-        yoyo: false,
         variationDirection: 1,
+        mode: "normal",
         ...initialState
     }
-
-
-    metro_update_period(state);
 
     return state;
 }
@@ -71,7 +58,7 @@ export function metro_play(state: MetroState)
     state.isPlaying        = true;
     state.last_frame_time = performance.now();
 
-    if (state.variationOn)
+    if (state.mode != "normal")
         metro_set_tempo(state, state.tempoBegin);
 
     metro_loop(state);
@@ -95,11 +82,6 @@ export function metro_stop(state: MetroState)
     metro_emit_change(state, { isPlaying: state.isPlaying });
 }
 
-function metro_update_period(state: MetroState)
-{
-    state.period = 60 / state.tempo * 1000; // frequency in bpm to period in ms
-}
-
 export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tempo' | 'tempoBegin' | 'tempoEnd' = 'tempo')
 {
     console.assert(new_tempo > 0, "New tempo must be strictly positive");
@@ -109,8 +91,7 @@ export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tem
 
     const diffAsIntegers = Math.round(state[slot]) - Math.round(new_tempo)
 
-    state[slot] = new_tempo    
-    metro_update_period(state);
+    state[slot] = new_tempo;
 
     if ( Math.abs(diffAsIntegers) > 0 ) state.onChange({ [slot]: Math.round(new_tempo) })
 }
@@ -124,20 +105,20 @@ export function metro_update(state: MetroState, dt: number)
     if (!state.isPlaying)
         return;
           
-    if ( state.variationOn )
+    if ( state.mode != "normal" )
     {
         let reachedBoundary =
             ( state.variationDirection > 0 && state.tempoEnd - state.tempo <= 0 ) ||
             ( state.variationDirection < 0 && state.tempo - state.tempoBegin <= 0 ) 
 
-        if ( reachedBoundary && state.yoyo)
+        if ( reachedBoundary && state.mode === "yoyo")
         {
             state.variationDirection = -state.variationDirection;
         }
 
         // TODO: precompute once?
         const bpmRange = (state.tempoEnd-state.tempoBegin) * state.variationDirection;
-        const bpmToAddPerMs = bpmRange / (state.variationDuration * 1000);
+        const bpmToAddPerMs = bpmRange / (state.period * 1000);
         const newTempo = clamp(state.tempo + bpmToAddPerMs * dt, state.tempoBegin, state.tempoEnd)
 
         metro_set_tempo(state, newTempo );
@@ -150,7 +131,7 @@ export function metro_update(state: MetroState, dt: number)
     }
 
     metro_flash_diode(state)
-    state.next_tick_delay =  state.next_tick_delay - dt + state.period;
+    state.next_tick_delay =  state.next_tick_delay - dt + (60 / state.tempo * 1000);
     state.sound.play()
 }
 
@@ -182,20 +163,14 @@ export function metro_loop(state: MetroState)
     });
 }
 
-export function metro_toggle_variation(state: MetroState)
+export function metro_set_mode(state: MetroState, mode: Mode)
 {
-    state.variationOn = ! state.variationOn
-    metro_emit_change(state, { variationOn: state.variationOn })
+    state.mode = mode;
+    metro_emit_change(state, { mode: state.mode })
 }
 
-export function metro_set_variation_duration(state: MetroState, variationDuration: number)
+export function metro_set_period(state: MetroState, period: number)
 {
-    state.variationDuration = variationDuration
-    metro_emit_change(state, { variationDuration: state.variationDuration })
-}
-
-export function metro_toggle_yoyo(state: MetroState)
-{
-    state.yoyo = ! state.yoyo
-    metro_emit_change(state, { yoyo: state.yoyo })
+    state.period = period
+    metro_emit_change(state, { period: state.period })
 }

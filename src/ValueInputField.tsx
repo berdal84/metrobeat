@@ -51,7 +51,7 @@ export function ValueInputField(props: Partial<Props> )
   const handlePlusTen  = useCallback( () => setValue( value + 10 ), [value])
 
   return (
-    <div className="ValueInputField" {...divProps}>
+    <div className="ValueInputField FormGroup" {...divProps}>
       
         <button onClick={handleMinusTen} inert={value <= min}>
           <MinusIcon/><span>10</span>

@@ -1,6 +1,16 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
-import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState, metro_set_variation_duration, metro_toggle_yoyo } from "./Metronome";
-import { clamp } from "../tools";
+import {
+  metro_create,
+  metro_play,
+  metro_stop,
+  metro_set_tempo,
+  type MetroState,
+  type MetroEventChange,
+  type MetroInitialState,
+  metro_set_period,
+  metro_set_mode,
+  type Mode,
+} from "./Metronome";
 
 // State with the field we might want to display
 type MetroViewState = Pick<
@@ -8,21 +18,19 @@ type MetroViewState = Pick<
   'diodeOn' |
   'isPlaying' | 
   'tempo' | 
-  'variationOn' | 
+  'mode' | 
   'tempoBegin' | 
   'tempoEnd' |
-  'variationDuration' |
-  'yoyo'
+  'period'
 >
 
 const DEFAULT_VIEW_STATE: MetroViewState = {
     isPlaying: false,
     tempo: -1,
     tempoBegin: -1, tempoEnd: -1,
-    variationOn: false,
+    mode: "normal",
     diodeOn: false,
-    variationDuration: 60,
-    yoyo: false
+    period: 60,
 }
 
 // Headless metronome
@@ -31,22 +39,19 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
   const metronome = useMemo(() => metro_create(initialState), [])
   const [viewState, setViewState] = useState<MetroViewState>(DEFAULT_VIEW_STATE)
 
-  const toggleVariation = useCallback( () => metro_toggle_variation(metronome), [] )
+  const setMode = useCallback( (mode: Mode) => metro_set_mode(metronome, mode), [] )
   const setTempoBegin   = useCallback( (value: number) => metro_set_tempo(metronome, value, 'tempoBegin'), [] )
   const setTempoEnd     = useCallback( (value: number) => metro_set_tempo(metronome, value, 'tempoEnd'), [] )
   const setTempo = useCallback( (value: number) => metro_set_tempo(metronome, value), [] )
   const play     = useCallback( () => metro_play(metronome), [] )
   const stop     = useCallback( () => metro_stop(metronome), [] )
-  const setVariationDuration = useCallback( (value: number) => {
-    metro_set_variation_duration(metronome, value);
-  }, [])
-  const toggleYoyo = useCallback(() => metro_toggle_yoyo(metronome), [] )
+  const setPeriod = useCallback( (value: number) => metro_set_period(metronome, value), [])
 
   useEffect(() => {
 
     // TODO: this could be an event emitted by the metronome, like onInit()
-    const { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration, yoyo } = metronome;
-    setViewState({ isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration, yoyo })
+    const { isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period } = metronome;
+    setViewState({ isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period })
 
     metronome.onChange = (changes: MetroEventChange) => {
       console.log('State changes:', changes)
@@ -61,13 +66,12 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
   return {
     metronome: metronome,
     viewState,
-    toggleVariation,
     setTempo,
     setTempoBegin,
     setTempoEnd,
     play,
     stop,
-    setVariationDuration,
-    toggleYoyo,
+    setPeriod,
+    setMode,
   }
 }

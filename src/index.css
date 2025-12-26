@@ -5,7 +5,7 @@ html, body {
   margin: 0;
   background-color: #3d3d3f;
   --bg-color-primary: rgba(34, 35, 47, 0.939);
-  --bg-color-secondary: rgba(34, 35, 47, 0.939);
+  --bg-color-secondary: rgba(153, 142, 195, 0.939);
   --btn-color: rgba(34, 35, 47, 0.939);
   --btn-color-hover: rgba(62, 64, 86, 0.939);
   --border-radius: 5px;
@@ -81,31 +81,14 @@ header {
 
 section {
   padding-bottom: 5px;
-  border-bottom: 1px solid var(--border-color-primary);
+  border-bottom: 1px solid var(--bg-color-secondary);
   margin-bottom: 5px;
 }
 
 section.controls {
   display: flex;
   gap: var(--gap-1);
-}
-
-section.variation {
-  display: grid;
-  gap: var(--gap-3);
-  align-items: start;
-  grid-template-columns: 1fr ;
-}
-
-.ValueInputFieldRange {
-
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-3);
-
-  .ValueInputField {
-    margin-top: var(--gap-2);
-  }
+  justify-content: space-between;
 }
 
 button {
@@ -126,7 +109,6 @@ button:hover {
 
 input {
   background-color: #fefefe;
-  border-radius: var(--border-radius);
   font-size: 15pt;
   max-width: 4rem;
   padding-left: 0.5rem;
@@ -136,6 +118,56 @@ input {
 label {
   display: flex;
   align-items: center;
+}
+
+.modes > button {
+  height: 1.5rem;
+}
+
+section.variation {
+  display: grid;
+  gap: var(--gap-3);
+  align-items: start;
+  grid-template-columns: 1fr ;
+}
+
+.ValueInputFieldRange {
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+
+  .ValueInputField {
+    margin-top: var(--gap-2);
+  }
+}
+
+.FormGroup {
+  display: flex;
+
+  * {
+    border-radius: 0;
+  }
+
+  button {
+    font-size: 0.8rem;
+  }
+
+  :not(&:last-child) {
+    border-right-width: 0;
+  }
+
+  :first-child {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+  }
+
+  :last-child {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+}
+
+.FormGroup .off {
+  opacity: 0.5;
 }
 
 .tempo-range {
@@ -220,12 +252,6 @@ label {
     border-radius: unset
   }
 
-  button:first-child  {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right-width: 0;
-  }
-
   button span {
     font-size: 0.9rem;
     margin-top: auto;
@@ -234,27 +260,18 @@ label {
   .ValueInputField-div {
     display: flex;
     border: 1px solid rgba(251, 167, 252, 0.91);
-    border-left: 0;
-    border-right: 0;
   }
   
   .ValueInputField-input {
-    border-radius: unset;
-    border-left: unset;
-    border-right: unset;
     text-align: right;
+    border-radius: 0;
   }
 
   .ValueInputField-unit {
     background-color: white;
     color: #b0b0b0;
     padding: 0.1rem;
-  }
-
-  button:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-left-width: 0;
+    border-radius: 0;
   }
 }
 
