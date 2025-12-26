@@ -29,7 +29,7 @@ html, body {
 #root {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   width: 100%;
   height: 100%;
 }
@@ -53,8 +53,6 @@ input[type=number] {
 
 .App {
   background: linear-gradient(0deg, #f4bebe, #99a0ef);
-  width: 500px;
-  height: 300px;
   border-radius: var(--border-radius);
   text-align: center;
   box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
@@ -65,7 +63,6 @@ input[type=number] {
   gap: 5px;
   padding: 4px;
   margin-top: 20px;
-  transition: height 1s, width 1s;
 }
 
 @media only screen 
