@@ -1,4 +1,5 @@
 import { Howl } from 'howler'
+import { clamp } from '../tools';
 
 export type MetroState = {
     isPlaying: boolean;
@@ -101,6 +102,8 @@ function metro_update_period(state: MetroState)
 
 export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tempo' | 'tempoBegin' | 'tempoEnd' = 'tempo')
 {
+    console.assert(new_tempo > 0, "New tempo must be strictly positive");
+
     if (state[slot] == new_tempo )
         return;
 
@@ -110,14 +113,6 @@ export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tem
     metro_update_period(state);
 
     if ( Math.abs(diffAsIntegers) > 0 ) state.onChange({ [slot]: Math.round(new_tempo) })
-}
-
-function clamp(value: number, min: number, max: number): number
-{
-    console.assert( min < max, "min should be strictly lower than max", min, max)
-    if (value < min) return min;
-    if (value > max) return max;
-    return value;
 }
 
 export function metro_update(state: MetroState, dt: number)

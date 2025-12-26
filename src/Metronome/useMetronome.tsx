@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
 import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState, metro_set_variation_duration, metro_toggle_yoyo } from "./Metronome";
+import { clamp } from "../tools";
 
 // State with the field we might want to display
 type MetroViewState = Pick<

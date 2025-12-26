@@ -1,16 +1,14 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
 import { useCallback, useEffect, type MouseEventHandler } from "react"
-import { TempoInput } from "./Metronome/TempoInput"
+import { ValueInputField } from "./ValueInputField"
 
 // TODO LIST
 //
 // ## Corriger bugs:
 //
 // ## Fonctionnalités:
-// - [ ] limiter BPM entre 10 et 300 sur l'interface graphique.
 // - [ ] modes: utiliser les mots "régulier", "accererando", "zigzag" (en groupe de boutons toggle)
-// - [ ] tempo: deux boutons (+/-1, +/- 10)
 // - [ ] volume: slider horizontal 
 //
 // ## Secondaire:
@@ -24,12 +22,10 @@ import { TempoInput } from "./Metronome/TempoInput"
 
 const news = `
     Quoi de neuf?
+    - tempo: deux boutons (+/-1, +/- 10)
+    - limiter BPM entre 10 et 300 sur l'interface graphique.
     - accelerando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
     - accererando/yoyo: contraindre le BPM entre [BPM début, BPM fin] à tout instant.
-    - ajout du mode yoyo.
-    - correction de bugs mode variation: play échoue 1ere fois, perte de valeur de tempo.
-    - debut de la fonctionnalite de variation (sur une minute pour l'instant)
-    - correction de pb de son lors de perte de la recuperation du focus de la fenetre.
   `
 
 function App() {
@@ -64,7 +60,7 @@ function App() {
 
       <header>
         Métron<span style={{ color: "#bec6ffff" }}>ô</span>me
-        <span onClick={handleVersionClick} className="version">v{packageJson.version}</span>
+        <span className="version">v{packageJson.version}</span>
       </header>
 
       <main>
@@ -76,8 +72,8 @@ function App() {
             {viewState.isPlaying ? 'STOP' : 'PLAY'}
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
-            { viewState.variationOn && viewState.isPlaying && <label>Actuel: {viewState.tempo} bpm</label>}
-            { !viewState.variationOn && <TempoInput tempo={viewState.tempo} onTempoChange={setTempo}/>}
+            { viewState.variationOn && viewState.isPlaying && <p>Actuel: {viewState.tempo} bpm</p>}
+            { !viewState.variationOn && <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>}
         </section>
 
         <section className="variation" inert={viewState.isPlaying}>
@@ -88,25 +84,40 @@ function App() {
                 checked={viewState.variationOn}
                 onChange={toggleVariation}
               />
-              Mode Crescendo
+              Interpoler le tempo
             </label>
             { viewState.variationOn && <label>
               <input type="checkbox" checked={viewState.yoyo} onChange={toggleYoyo}/>
-                Boucler (Yoyo)
+                Boucler à l'infini
             </label>}
           </div>
 
-          { viewState.variationOn && <div className="TempoInputRange">
-            <div><label>BPM de début:</label><TempoInput tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/></div>
-            <div><label>BPM de fin:</label><TempoInput  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/></div>
-            <div><label>Durée en sec:</label><TempoInput  tempo={viewState.variationDuration} onTempoChange={setVariationDuration}/></div>
-          </div>}
+          <div className="TempoInputRange" hidden={!viewState.variationOn}>
+            <div className="ValueInputField-group">
+              <label className="ValueInputField-label">Tempo de départ</label>
+              <ValueInputField tempo={viewState.tempoBegin} onTempoChange={setTempoBegin} unit="bpm"/>
+            </div>
+            <div className="ValueInputField-group">
+              <label className="ValueInputField-label">Tempo de fin</label>
+              <ValueInputField  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd} unit="bpm"/>
+            </div>
+          </div>
+
+          <div className="ValueInputField-group" hidden={!viewState.variationOn}>
+            <label className="ValueInputField-label">Durée d'interpolation</label>
+            <ValueInputField 
+              tempo={viewState.variationDuration}
+              onTempoChange={setVariationDuration}
+              min={1} max={10*60} unit="sec"
+            />
+          </div>
         </section>
 
       </main>
 
-      <footer className="description">"Le" métronome qui sait se distinguer.</footer>
-
+      <footer>
+        <span onClick={handleVersionClick} className="what-s-new">Quoi d'neuf sur la v{packageJson.version}?</span>
+      </footer>
     </div>
   )
 }

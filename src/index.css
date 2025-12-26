@@ -6,6 +6,8 @@ html, body {
   background-color: #3d3d3f;
   --bg-color-primary: rgba(34, 35, 47, 0.939);
   --bg-color-secondary: rgba(34, 35, 47, 0.939);
+  --btn-color: rgba(34, 35, 47, 0.939);
+  --btn-color-hover: rgba(62, 64, 86, 0.939);
   --border-radius: 5px;
   --border-color-primary: rgb(87, 7, 75);
   --border-color-secondary: rgba(251, 167, 252, 0.91);
@@ -14,6 +16,14 @@ html, body {
   --gap-1: 2px;
   --gap-2: 4px;
   --gap-3: 16px;
+}
+
+.mt-3 {
+  margin-top: 8px;
+}
+
+.mt-5 {
+  margin-top: 16px;
 }
 
 body {
@@ -28,8 +38,19 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: unset;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
 .App {
-  background: linear-gradient(45deg, #8f5757, #99a0ef);
+  background: linear-gradient(0deg, #f4bebe, #99a0ef);
   max-width: 90vw;
   min-width: 200px;
   border-radius: var(--border-radius);
@@ -44,10 +65,10 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 header {
-  background-color: #41072e61;
+  background-color: #e740af61;
   font-size: 25pt;
-  text-shadow: 0px 1px 5px rgba(51, 4, 22, 0.619);
-  color: #e5beeebc;
+  text-shadow: 1px 1px 2px rgba(27, 23, 95, 0.711);
+  color: #f7d6ffbc;
   margin: unset;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -76,13 +97,13 @@ section.variation {
   grid-template-columns: 1fr ;
 }
 
-.TempoInputRange {
+.ValueInputFieldRange {
 
   display: flex;
   flex-direction: column;
   gap: var(--gap-3);
 
-  .TempoInput {
+  .ValueInputField {
     margin-top: var(--gap-2);
   }
 }
@@ -91,11 +112,16 @@ button {
   height: 40px;
   display: flex;
   align-items: center;
-  background-color: var(--bg-color-secondary);
+  background-color: var(--btn-color);
   color: var(--text-seconday);
   border-radius: var(--border-radius);
   font-size: larger;
   border: 1px solid var(--border-color-secondary);
+}
+
+button:hover {
+  background-color: var(--btn-color-hover);
+  cursor: pointer;
 }
 
 input {
@@ -104,7 +130,7 @@ input {
   font-size: 15pt;
   max-width: 4rem;
   padding-left: 0.5rem;
-  border: 1px solid rgba(251, 167, 252, 0.91);
+  border: unset;
 }
 
 label {
@@ -134,14 +160,6 @@ label {
   align-self: center;
 }
 
-.description {
-  margin: unset;
-  padding: 3px;
-  width: 100%;
-  text-align: left;
-  font-size: 0.75rem;
-  opacity: 50%;
-}
 
 .version {
   font-size: 0.4em;
@@ -154,32 +172,103 @@ label {
   border-top: 1px solid rgba(0, 0, 0, 0.286);
 }
 
-.TempoInput {
+.ValueInputField-group {
+  filter: drop-shadow(-1px 2px 2px rgba(1, 151, 185, 0.575))
+}
+
+.ValueInputField-label {
+  background-color: rgb(251, 190, 255);
+  margin-top: 5px;
+  margin-bottom: -5px;
+  padding: 0.2rem;
+  padding-bottom: calc(0.2rem + 5px);
+  justify-self: left;
+  min-width: 50%;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  font-size: 0.8rem;
+}
+
+.ValueInputField {
   display: flex;
 
   button {
-    min-width: 3rem;
+    display: flex;
+
+    &::after {
+      height: 5%;
+      font-size: 0.8rem;
+    }
   }
 
-  :first-child {
+  button {
+    :first-child {
+      height: 75%;
+    }
+  }
+  button:first-child, button:last-child {
+    &::after {
+      height: 5%;
+      font-size: 0.8rem;
+    }
+  }
+
+  button:nth-child(2), button:nth-last-child(2)  {
+    &::after {
+      height: 5%;
+      font-size: 1rem;
+    }
+    border-radius: unset
+  }
+
+  button:first-child  {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right-width: 0;
   }
 
-  input {
+  button span {
+    font-size: 0.9rem;
+    margin-top: auto;
+  }
+
+  .ValueInputField-div {
+    display: flex;
+    border: 1px solid rgba(251, 167, 252, 0.91);
+    border-left: 0;
+    border-right: 0;
+  }
+  
+  .ValueInputField-input {
     border-radius: unset;
     border-left: unset;
     border-right: unset;
+    text-align: right;
   }
 
-  .unit {
-    padding: 2px;
+  .ValueInputField-unit {
     background-color: white;
+    color: #b0b0b0;
+    padding: 0.1rem;
   }
 
-  :last-child {
+  button:last-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    border-left-width: 0;
   }
 }
 
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin: unset;
+  text-align: center;
+  font-size: 0.75rem;
+  opacity: 30%;
+}
+
+.what-s-new {
+  text-decoration: underline;
+  cursor: pointer;
+}
