@@ -14,9 +14,11 @@ export type MetroState = {
     variationOn: boolean;
     variationDuration: number;
     diodeOn: boolean;
+    yoyo: boolean;
+    variationDirection: number;
 }
 
-export type MetroEventChange = Partial<Pick<MetroState, 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'variationOn' |'diodeOn' | 'variationDuration'>>
+export type MetroEventChange = Partial<Pick<MetroState, 'yoyo'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'variationOn' |'diodeOn' | 'variationDuration'>>
 
 export type MetroInitialState = {
     tempo: number;
@@ -24,6 +26,7 @@ export type MetroInitialState = {
     tempoBegin: number;
     tempoEnd: number;
     variationDuration: number;
+    yoyo: boolean;
 }
 
 export function metro_create( initialState: Partial<MetroInitialState> = {} ): MetroState
@@ -48,6 +51,8 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         period: 0,
         diodeOn: false,
         variationDuration: 0,
+        yoyo: false,
+        variationDirection: 1,
         ...initialState
     }
 
@@ -118,14 +123,25 @@ export function metro_update(state: MetroState, dt: number)
           
     if ( state.variationOn )
     {
-        if ( state.tempo >= state.tempoEnd )
+        let reachedBoundary =
+            ( state.variationDirection > 0 && state.tempoEnd - state.tempo < 0 ) ||
+            ( state.variationDirection < 0 && state.tempo - state.tempoBegin < 0 ) 
+
+        if ( reachedBoundary )
         {
-            metro_stop(state)
-            return;
+            if (state.yoyo)
+            {
+                state.variationDirection = -state.variationDirection;
+            }
+            else
+            {
+                metro_stop(state)
+                return;
+            }
         }
 
         // TODO: precompute once?
-        const bpmRange = state.tempoEnd-state.tempoBegin
+        const bpmRange = (state.tempoEnd-state.tempoBegin) * state.variationDirection;
         const bpmToAddPerMs = bpmRange / (state.variationDuration * 1000);
 
         metro_set_tempo(state, state.tempo + bpmToAddPerMs * dt )
@@ -180,4 +196,10 @@ export function metro_set_variation_duration(state: MetroState, variationDuratio
 {
     state.variationDuration = variationDuration
     metro_emit_change(state, { variationDuration: state.variationDuration })
+}
+
+export function metro_toggle_yoyo(state: MetroState)
+{
+    state.yoyo = ! state.yoyo
+    metro_emit_change(state, { yoyo: state.yoyo })
 }

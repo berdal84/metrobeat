@@ -17,7 +17,8 @@ function App() {
     stop, play,
     setTempo, setTempoBegin, setTempoEnd,
     toggleVariation,
-    setVariationDuration
+    setVariationDuration,
+    toggleYoyo
   } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, variationDuration: 60});
 
   const handleVersionClick = useCallback(() => {
@@ -57,15 +58,22 @@ function App() {
             { !viewState.variationOn && <TempoInput tempo={viewState.tempo} onTempoChange={setTempo}/>}
         </section>
 
-        <section className="variation">
-          <label>
-            <input
-              type="checkbox"
-              checked={viewState.variationOn}
-              onChange={toggleVariation}
-            />
-            Mode Crescendo
-          </label>
+        <section className="variation" inert={viewState.isPlaying}>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={viewState.variationOn}
+                onChange={toggleVariation}
+              />
+              Mode Crescendo
+            </label>
+            { viewState.variationOn && <label>
+              <input type="checkbox" checked={viewState.yoyo} onChange={toggleYoyo}/>
+                Boucler (Yoyo)
+            </label>}
+          </div>
+
           { viewState.variationOn && <div className="TempoInputRange">
             <div><label>BPM de début:</label><TempoInput tempo={viewState.tempoBegin} onTempoChange={setTempoBegin}/></div>
             <div><label>BPM de fin:</label><TempoInput  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd}/></div>

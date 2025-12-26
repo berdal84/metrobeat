@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
-import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState, metro_set_variation_duration } from "./Metronome";
+import { metro_create, metro_play, metro_stop, metro_set_tempo, type MetroState, type MetroEventChange, metro_toggle_variation, type MetroInitialState, metro_set_variation_duration, metro_toggle_yoyo } from "./Metronome";
 
 // State with the field we might want to display
 type MetroViewState = Pick<
@@ -10,7 +10,8 @@ type MetroViewState = Pick<
   'variationOn' | 
   'tempoBegin' | 
   'tempoEnd' |
-  'variationDuration'
+  'variationDuration' |
+  'yoyo'
 >
 
 const DEFAULT_VIEW_STATE: MetroViewState = {
@@ -20,6 +21,7 @@ const DEFAULT_VIEW_STATE: MetroViewState = {
     variationOn: false,
     diodeOn: false,
     variationDuration: 60,
+    yoyo: false
 }
 
 // Headless metronome
@@ -37,12 +39,13 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
   const setVariationDuration = useCallback( (value: number) => {
     metro_set_variation_duration(metronome, value);
   }, [])
+  const toggleYoyo = useCallback(() => metro_toggle_yoyo(metronome), [] )
 
   useEffect(() => {
 
     // TODO: this could be an event emitted by the metronome, like onInit()
-    const { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration } = metronome;
-    setViewState({ isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration })
+    const { isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration, yoyo } = metronome;
+    setViewState({ isPlaying, tempo, tempoBegin, tempoEnd, variationOn, diodeOn, variationDuration, yoyo })
 
     metronome.onChange = (changes: MetroEventChange) => {
       console.log('State changes:', changes)
@@ -63,6 +66,7 @@ export function useMetronome( initialState: Partial<MetroInitialState> = {})
     setTempoEnd,
     play,
     stop,
-    setVariationDuration
+    setVariationDuration,
+    toggleYoyo,
   }
 }
