@@ -4,8 +4,8 @@ html, body {
   height: 100%;
   margin: 0;
   background-color: #3d3d3f;
-  --bg-color-primary: rgba(34, 35, 47, 0.939);
-  --bg-color-secondary: rgba(153, 142, 195, 0.939);
+  --bg-color-primary: rgb(34, 35, 47);
+  --bg-color-secondary: rgb(153, 142, 195);
   --btn-color: rgba(34, 35, 47, 0.939);
   --btn-color-hover: rgba(62, 64, 86, 0.939);
   --border-radius: 5px;
@@ -13,6 +13,7 @@ html, body {
   --border-color-secondary: rgba(251, 167, 252, 0.91);
   --text-primary: rgb(31, 24, 24) ;
   --text-secondary: #fff;
+  --text-size-sm: 0.75rem;
   --gap-1: 2px;
   --gap-2: 4px;
   --gap-3: 16px;
@@ -121,8 +122,6 @@ button:hover {
 input {
   background-color: #fefefe;
   font-size: 15pt;
-  max-width: 4rem;
-  padding-left: 0.5rem;
   border: unset;
 }
 
@@ -282,6 +281,7 @@ button.unselected {
   .ValueInputField-input {
     text-align: right;
     border-radius: 0;
+    max-width: 4rem;
   }
 
   .ValueInputField-unit {
@@ -305,4 +305,43 @@ footer {
 .what-s-new {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.volume {
+  display: flex;
+  justify-content: space-around;
+  height: 2rem;
+  align-items: center;
+  border-radius: var(--border-radius);
+
+  label {
+    color: var(--text-primary);
+    font-size: var(--text-size-sm);
+    text-align: center;
+    flex: auto;
+    padding-left: 6px;
+  }
+
+  input[type=range] {
+    flex: 1;
+    appearance: none;
+    height: 2px;
+    max-width: 75%;
+    border-radius: 10px;
+  }
+
+  input[type=range]:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+
+  input[type=range]::-webkit-slider-thumb
+  {
+    -webkit-appearance: none;
+    border: 1px solid #000000;
+    width: 40px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--bg-color-primary);
+    cursor: pointer;
+  }
 }

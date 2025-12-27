@@ -1,15 +1,14 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
-import { useCallback, useEffect, type MouseEventHandler, type ReactNode } from "react"
+import { useCallback, useEffect, useMemo, type MouseEventHandler, type ReactNode } from "react"
 import { ValueInputField } from "./ValueInputField"
-import type { Mode } from "./Metronome/Metronome"
+import { MODE, type Mode } from "./Metronome/Metronome"
 
 // TODO LIST
 //
 // ## Corriger bugs:
 //
 // ## Fonctionnalités:
-// - [ ] volume: slider horizontal 
 //
 // ## Secondaire:
 // - [ ] valeur note du 1er temps: [-1 Octave, 0, +1 Octave] (Cad freq x1/2 ou x2).
@@ -22,30 +21,28 @@ import type { Mode } from "./Metronome/Metronome"
 
 const news = `
     Quoi de neuf?
-    - modes: utiliser les mots "régulier", "accelerando", "zigzag" (en groupe de boutons toggle)
-    - tempo: deux boutons (+/-1, +/- 10)
-    - limiter BPM entre 10 et 300 sur l'interface graphique.
-    - accelerando: ne pas faire stop en fin, rester au tempo de fin à l'infini.
-    - accererando/yoyo: contraindre le BPM entre [BPM début, BPM fin] à tout instant.
+    - ajout d'un slider pour le volume
+    - utilisation d'un son plus naturel (en DO).
+    - modes: le label "interpolé" devient "accelerando"
   `
 
 const MODES: Array<{ value: Mode, label: ReactNode }> = [
   {
-    value: "normal",
+    value: MODE.CONSTANT,
     label: "Régulier"
   },
   {
-    value: "grow",
+    value: MODE.INTERPOLATE_UP_AND_HOLD,
     label:
       <div className="d-flex">
         <svg width="1rem" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75 12 3m0 0 3.75 3.75M12 3v18" />
         </svg>
-        <span>Interpolé</span>
+        <span>Accelerando</span>
       </div>
   },
   {
-    value: "yoyo",
+    value: MODE.INTERPOLATE_UP_AND_DOWN_FOREVER,
     label:
       <div className="d-flex">
         <svg width="1rem" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -64,6 +61,7 @@ function App() {
     setTempo, setTempoBegin, setTempoEnd,
     setPeriod,
     setMode,
+    setVolume,
   } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, period: 60});
 
   const handleVersionClick = useCallback(() => {
@@ -81,6 +79,12 @@ function App() {
   useEffect( () => {
     console.log("useEffect's viewState:", viewState);
   }, [viewState.isPlaying])
+
+  const volumeLabel = useMemo(() => {
+    if (viewState.volume === 0)
+      return `Muet`;
+    return `Vol ${Math.round(viewState.volume*100)}%`
+  }, [viewState.volume])
 
   return (
     <div className="App">
@@ -101,27 +105,40 @@ function App() {
             <div style={{ opacity: viewState.diodeOn ? 1 : 0.4 }} className='diode'/>
           </button>
 
-          <div className="FormGroup modes" inert={viewState.isPlaying}>
-            {MODES.map( (item, i) => {
-              return <button
-                key={i}
-                className={item.value == viewState.mode ? 'selected' : 'unselected'}
-                onClick={(_) => setMode(item.value)}
-              >
-                {item.label}
-              </button>
-            })}
+          <div>
+            
+            <div className="volume">
+              <input
+                type="range"
+                id="volume"
+                name="volume"
+                min="0"
+                max="1"
+                value={viewState.volume}
+                onChange={(event) => setVolume( event.currentTarget.valueAsNumber )}
+                step="0.05" />
+              <label htmlFor="volume">{volumeLabel}</label>
+            </div>
+            <div className="FormGroup modes" inert={viewState.isPlaying}>
+              {MODES.map( (item, i) => {
+                return <button
+                  key={i}
+                  className={item.value == viewState.mode ? 'selected' : 'unselected'}
+                  onClick={(_) => setMode(item.value)}
+                >
+                  {item.label}
+                </button>
+              })}
+            </div>
           </div>
         </section>
 
-
-
-        <div hidden={viewState.mode != "normal"}>
+        <div hidden={viewState.mode != MODE.CONSTANT}>
           <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
         </div>
 
         <section className="variation" inert={viewState.isPlaying}>
-          <div className="TempoInputRange" hidden={viewState.mode == "normal"}>
+          <div className="TempoInputRange" hidden={viewState.mode ==  MODE.CONSTANT}>
             <div className="ValueInputField-group">
               <label className="ValueInputField-label">Tempo de départ</label>
               <ValueInputField tempo={viewState.tempoBegin} onTempoChange={setTempoBegin} unit="bpm"/>
@@ -132,8 +149,8 @@ function App() {
             </div>
           </div>
 
-          <div className="ValueInputField-group" hidden={viewState.mode == "normal"}>
-            <label className="ValueInputField-label">{ viewState.mode == "yoyo" ? "Demi-période" : "Période"} </label>
+          <div className="ValueInputField-group" hidden={viewState.mode ==  MODE.CONSTANT}>
+            <label className="ValueInputField-label">{ viewState.mode ==  MODE.INTERPOLATE_UP_AND_DOWN_FOREVER ? "Demi-période" : "Période"} </label>
             <ValueInputField 
               tempo={viewState.period}
               onTempoChange={setPeriod}

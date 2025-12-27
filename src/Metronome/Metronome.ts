@@ -1,11 +1,20 @@
 import { Howl } from 'howler'
 import { clamp } from '../tools';
 
-export type  Mode = "normal" | "grow" | "yoyo";
+export const MODE = {
+    CONSTANT    : 0,
+    INTERPOLATE_UP_AND_HOLD : 1,
+    INTERPOLATE_UP_AND_DOWN_FOREVER: 2,
+} as const
 
-export type MetroState = {
+export type Mode = typeof MODE.CONSTANT
+                 | typeof MODE.INTERPOLATE_UP_AND_HOLD
+                 | typeof MODE.INTERPOLATE_UP_AND_DOWN_FOREVER;
+
+
+export type State = {
     isPlaying: boolean;
-    onChange: (change: Partial<MetroEventChange>) => void;
+    onChange: (change: Partial<EventChange>) => void;
     tempo: number;
     tempoBegin: number;
     tempoEnd: number;
@@ -17,20 +26,22 @@ export type MetroState = {
     mode: Mode;
     variationDirection: number;
     diodeOn: boolean;
+    volume: number;
 }
 
-export type MetroEventChange = Partial<Pick<MetroState, 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
+export type EventChange =  Partial<Pick<State, 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
 
-export type MetroInitialState = MetroEventChange;
-export function metro_create( initialState: Partial<MetroInitialState> = {} ): MetroState
+export type InitialState = EventChange;
+export function create( initialState: Partial<InitialState> = {} ): State
 {
 
     const sound = new Howl({
-        src: ['tick.mp3'],
+        src: ['tick_A.mp3'],
         preload: true,
     })
 
-    const state: MetroState = {
+    const state: State = {
+        volume: 0.5,
         tempo: 80,
         tempoBegin: 80,
         tempoEnd: 120,
@@ -39,18 +50,18 @@ export function metro_create( initialState: Partial<MetroInitialState> = {} ): M
         next_tick_delay: 0,
         last_frame_time: 0,
         requestAnimationFrameId: 0,
-        onChange: (_: Partial<MetroEventChange>) => {},
+        onChange: (_: Partial<EventChange>) => {},
         period: 0,
         diodeOn: false,
         variationDirection: 1,
-        mode: "normal",
+        mode: 0,
         ...initialState
     }
 
     return state;
 }
 
-export function metro_play(state: MetroState)
+export function play(state: State)
 {
     if (state.isPlaying)
         return
@@ -58,19 +69,20 @@ export function metro_play(state: MetroState)
     state.isPlaying        = true;
     state.last_frame_time = performance.now();
 
-    if (state.mode != "normal")
-        metro_set_tempo(state, state.tempoBegin);
+    if (state.mode != MODE.CONSTANT)
+        set_tempo(state, state.tempoBegin);
 
-    metro_loop(state);
-    metro_emit_change(state, { isPlaying: state.isPlaying});
+    state.sound.stereo(-0.2); // update loop will toggle pan's sign
+    loop(state);
+    emit_change(state, { isPlaying: state.isPlaying});
 }
 
-export function metro_emit_change(state: MetroState, changes: MetroEventChange)
+export function emit_change(state: State, changes: EventChange)
 {
     state.onChange(changes);
 }
 
-export function metro_stop(state: MetroState)
+export function stop(state: State)
 {
     state.isPlaying  = false;
     
@@ -79,10 +91,10 @@ export function metro_stop(state: MetroState)
         state.requestAnimationFrameId = 0
     }
 
-    metro_emit_change(state, { isPlaying: state.isPlaying });
+    emit_change(state, { isPlaying: state.isPlaying });
 }
 
-export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tempo' | 'tempoBegin' | 'tempoEnd' = 'tempo')
+export function set_tempo(state: State, new_tempo: number, slot: 'tempo' | 'tempoBegin' | 'tempoEnd' = 'tempo')
 {
     console.assert(new_tempo > 0, "New tempo must be strictly positive");
 
@@ -96,7 +108,7 @@ export function metro_set_tempo(state: MetroState, new_tempo: number, slot: 'tem
     if ( Math.abs(diffAsIntegers) > 0 ) state.onChange({ [slot]: Math.round(new_tempo) })
 }
 
-export function metro_update(state: MetroState, dt: number)
+export function update(state: State, dt: number)
 {
     // skip any update that took too much time
     if ( dt > state.period)
@@ -105,13 +117,13 @@ export function metro_update(state: MetroState, dt: number)
     if (!state.isPlaying)
         return;
           
-    if ( state.mode != "normal" )
+    if ( state.mode != MODE.CONSTANT )
     {
         let reachedBoundary =
             ( state.variationDirection > 0 && state.tempoEnd - state.tempo <= 0 ) ||
             ( state.variationDirection < 0 && state.tempo - state.tempoBegin <= 0 ) 
 
-        if ( reachedBoundary && state.mode === "yoyo")
+        if ( reachedBoundary && state.mode === MODE.INTERPOLATE_UP_AND_DOWN_FOREVER)
         {
             state.variationDirection = -state.variationDirection;
         }
@@ -121,7 +133,7 @@ export function metro_update(state: MetroState, dt: number)
         const bpmToAddPerMs = bpmRange / (state.period * 1000);
         const newTempo = clamp(state.tempo + bpmToAddPerMs * dt, state.tempoBegin, state.tempoEnd)
 
-        metro_set_tempo(state, newTempo );
+        set_tempo(state, newTempo );
     }
     
     if ( state.next_tick_delay > dt)
@@ -130,27 +142,32 @@ export function metro_update(state: MetroState, dt: number)
         return;
     }
 
-    metro_flash_diode(state)
+    flash_diode(state)
     state.next_tick_delay =  state.next_tick_delay - dt + (60 / state.tempo * 1000);
+
+    // Alternate left/right pan
+    const pan = state.sound.stereo();
+    state.sound.stereo(-pan)
+
     state.sound.play()
 }
 
-export function metro_set_diode(state: MetroState, diodeOn: boolean)
+export function set_diode(state: State, diodeOn: boolean)
 {
     if (state.diodeOn == diodeOn)
         return
 
     state.diodeOn = diodeOn
-    metro_emit_change(state, { diodeOn: diodeOn })
+    emit_change(state, { diodeOn: diodeOn })
 }
 
-function metro_flash_diode(state: MetroState, duration: number = 100)
+function flash_diode(state: State, duration: number = 100)
 {
-    metro_set_diode(state, true)
-    setTimeout(() => metro_set_diode(state, false), duration)
+    set_diode(state, true)
+    setTimeout(() => set_diode(state, false), duration)
 }
 
-export function metro_loop(state: MetroState)
+export function loop(state: State)
 {
     state.requestAnimationFrameId = requestAnimationFrame((_: number) => {
 
@@ -158,19 +175,27 @@ export function metro_loop(state: MetroState)
         const dt  = now - state.last_frame_time;
         state.last_frame_time = now;
 
-        metro_update(state, dt);
-        metro_loop(state);
+        update(state, dt);
+        loop(state);
     });
 }
 
-export function metro_set_mode(state: MetroState, mode: Mode)
+export function set_mode(state: State, mode: Mode)
 {
     state.mode = mode;
-    metro_emit_change(state, { mode: state.mode })
+    emit_change(state, { mode })
 }
 
-export function metro_set_period(state: MetroState, period: number)
+export function set_period(state: State, period: number)
 {
     state.period = period
-    metro_emit_change(state, { period: state.period })
+    emit_change(state, { period })
 }
+
+export function set_volume(state: State, volume: number)
+{
+    state.volume = volume;
+    state.sound.volume(volume);
+    emit_change(state, { volume })
+}
+
