@@ -7,6 +7,7 @@ import { MODE, type Mode } from "./Metronome/Metronome"
 // TODO LIST
 //
 // ## Corriger bugs:
+// -  tempo de départ > tempo d'arrivée provoque une erreur dans Metronome.ts
 //
 // ## Fonctionnalités:
 //
@@ -138,7 +139,9 @@ function App() {
 
           </div>
 
-          <div className="FormGroup modes" inert={viewState.isPlaying}>
+          <div className="modes" inert={viewState.isPlaying}>
+              <hr/>
+              <div className="FormGroup">
               {MODES.map( (item, i) => {
                 return <button
                   key={i}
@@ -148,7 +151,10 @@ function App() {
                   {item.label}
                 </button>
               })}
+              </div>
+              <hr/>
             </div>
+            
         </section>
 
         <section hidden={viewState.mode != MODE.CONSTANT}>

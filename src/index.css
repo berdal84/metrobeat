@@ -142,19 +142,20 @@ label {
 }
 
 .modes {
+  display: flex;
   justify-content: center;
+  gap: 2px;
 
   button {
     height: 1.5rem;
   }
 
-  &::before, &::after {
-    content: '';
+  hr {
+    flex: auto;
     height: 1px;
-    width: 40px;
-    margin: 2px;
-    margin-top: 10px;
     background-color: var(--bg-color-secondary);
+    border: none;
+    transform: translateY(3px);
   }
 }
 
