@@ -152,7 +152,10 @@ function App() {
         </section>
 
         <section hidden={viewState.mode != MODE.CONSTANT}>
-          <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
+          <div className="ValueInputField-group">
+            <label className="ValueInputField-label">Tempo</label>
+            <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
+          </div>          
         </section>
 
         <section className="variation" inert={viewState.isPlaying}>

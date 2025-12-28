@@ -259,9 +259,11 @@ button.unselected {
   margin-top: 5px;
   margin-bottom: -5px;
   padding: 0.2rem;
+  padding-left: 0.4rem;
   padding-bottom: calc(0.2rem + 5px);
   justify-self: left;
-  min-width: 50%;
+  min-width: 25%;
+  max-width: 50%;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   font-size: 0.8rem;
 }
