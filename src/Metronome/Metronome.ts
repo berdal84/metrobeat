@@ -36,7 +36,7 @@ export function create( initialState: Partial<InitialState> = {} ): State
 {
 
     const sound = new Howl({
-        src: ['tick_A.mp3'],
+        src: ['tick_C.mp3'],
         preload: true,
     })
 
