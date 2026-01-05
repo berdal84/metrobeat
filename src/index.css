@@ -421,3 +421,22 @@ footer {
   display: flex;
   flex-direction: row;
 }
+
+.sequencer
+{
+  display: grid;
+}
+
+.sequencer-line
+{
+  display: grid;
+  grid-template-columns: auto repeat(16, 16px);
+  align-items: center;
+}
+
+.sequencer-btn
+{
+  &.down {
+    background-color: rgb(172, 0, 246);
+  }
+}

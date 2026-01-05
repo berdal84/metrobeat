@@ -11,6 +11,10 @@ export type Mode = typeof MODE.CONSTANT
                  | typeof MODE.INTERPOLATE_UP_AND_HOLD
                  | typeof MODE.INTERPOLATE_UP_AND_DOWN_FOREVER;
 
+export type Sequence = {
+    name: 'tick' |'hit' | 'hat' | 'snare';
+    data: Array<number>;
+}
 
 export type State = {
     isPlaying: boolean;
@@ -20,16 +24,20 @@ export type State = {
     tempoEnd: number;
     sound: Howl;
     last_frame_time: DOMHighResTimeStamp;
-    next_tick_delay: DOMHighResTimeStamp;
+    step: number;
+    step_per_bar: number;
+    bar_per_seq: number;
+    next_step_delay: DOMHighResTimeStamp;
     requestAnimationFrameId: number;
     period: number;
     mode: Mode;
     variationDirection: number;
     diodeOn: boolean;
     volume: number;
+    sequencer: Array<Sequence>;
 }
 
-export type EventChange =  Partial<Pick<State, 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
+export type EventChange =  Partial<Pick<State, 'sequencer' | 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
 
 export type InitialState = EventChange;
 export function create( initialState: Partial<InitialState> = {} ): State
@@ -42,12 +50,15 @@ export function create( initialState: Partial<InitialState> = {} ): State
 
     const state: State = {
         volume: 0.5,
+        step: 0,
+        step_per_bar: 4,
+        bar_per_seq: 4,
         tempo: 80,
         tempoBegin: 80,
         tempoEnd: 120,
         isPlaying: false,
         sound,
-        next_tick_delay: 0,
+        next_step_delay: 0,
         last_frame_time: 0,
         requestAnimationFrameId: 0,
         onChange: (_: Partial<EventChange>) => {},
@@ -55,6 +66,12 @@ export function create( initialState: Partial<InitialState> = {} ): State
         diodeOn: false,
         variationDirection: 1,
         mode: 0,
+        sequencer: [
+            { name: 'tick',  data: [1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0] },
+            { name: 'hat',   data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
+            { name: 'hit',   data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
+            { name: 'snare', data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
+        ],
         ...initialState
     }
 
@@ -136,20 +153,33 @@ export function update(state: State, dt: number)
         set_tempo(state, newTempo );
     }
     
-    if ( state.next_tick_delay > dt)
+    if ( state.next_step_delay > dt)
     {
-        state.next_tick_delay -= dt;
+        state.next_step_delay -= dt;
         return;
     }
 
+    // From here, we know we just entered next step
+
     flash_diode(state)
-    state.next_tick_delay =  state.next_tick_delay - dt + (60 / state.tempo * 1000);
 
-    // Alternate left/right pan
-    const pan = state.sound.stereo();
-    state.sound.stereo(-pan)
+    const barDelay = 60 / (state.tempo * state.step_per_bar) * 1000;
+    state.next_step_delay =  state.next_step_delay - dt + barDelay;
 
-    state.sound.play()
+    const totalBarCount = state.step_per_bar * state.bar_per_seq;
+    state.step = (state.step+1) % totalBarCount;
+    
+    for ( const seq of state.sequencer)
+    {
+        if ( seq.data[state.step] === 0 )
+            continue;
+
+        // Alternate left/right pan
+        const pan = state.sound.stereo();
+        state.sound.stereo(-pan)
+
+        state.sound.play()
+    }
 }
 
 export function set_diode(state: State, diodeOn: boolean)
@@ -197,5 +227,23 @@ export function set_volume(state: State, volume: number)
     state.volume = volume;
     state.sound.volume(volume);
     emit_change(state, { volume })
+}
+
+export function replace_sequence(state: State, seq: Sequence)
+{
+    console.assert(seq.data.length === state.bar_per_seq * state.step_per_bar );
+    const existing = state.sequencer.findIndex( s => s.name === seq.name );
+
+    if (existing === -1)
+    {
+        state.sequencer = [...state.sequencer, seq]
+    }
+    else
+    {
+        state.sequencer[existing] = seq;
+        state.sequencer = [...state.sequencer]
+    }
+    
+    emit_change(state, { sequencer: state.sequencer})
 }
 

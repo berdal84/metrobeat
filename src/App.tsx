@@ -67,12 +67,13 @@ const stopIcon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fil
 function App() {
 
   const {
-    viewState,
+    state,
     stop, play,
     setTempo, setTempoBegin, setTempoEnd,
     setPeriod,
     setMode,
     setVolume,
+    replaceSequence
   } = useMetronome({ tempo: 80, tempoBegin: 80, tempoEnd: 120, period: 60});
 
   const handleVersionClick = useCallback(() => {
@@ -80,22 +81,22 @@ function App() {
   }, [])
 
   const handlePlayButtonClick: MouseEventHandler<HTMLButtonElement> = useCallback((_) => {
-    if (viewState.isPlaying) {
+    if (state.isPlaying) {
       stop()
     } else {
       play()
     }
-  }, [viewState.isPlaying])
+  }, [state.isPlaying])
 
   useEffect( () => {
-    console.log("useEffect's viewState:", viewState);
-  }, [viewState.isPlaying])
+    console.log("useEffect's state:", state);
+  }, [state.isPlaying])
 
   const volumeLabel = useMemo(() => {
-    if (viewState.volume === 0)
+    if (state.volume === 0)
       return `Muet`;
-    return `Vol ${Math.round(viewState.volume*100)}%`
-  }, [viewState.volume])
+    return `Vol ${Math.round(state.volume*100)}%`
+  }, [state.volume])
 
   return (
     <div className="App">
@@ -112,16 +113,16 @@ function App() {
           <div className="controls-main">
             
             <div className="bpm-display">
-              <div className={ viewState.diodeOn ? 'diode diode-on' : 'diode' }/>
-              <p className={`value ${!viewState.isPlaying ? 'disabled' : ''}`}>
-                {viewState.tempo}
+              <div className={ state.diodeOn ? 'diode diode-on' : 'diode' }/>
+              <p className={`value ${!state.isPlaying ? 'disabled' : ''}`}>
+                {state.tempo}
                 <span className="unit">bpm</span>
               </p>
             </div>
 
             <div className="flex-col">
               <button className='play-button' onClick={handlePlayButtonClick}>
-                { viewState.isPlaying ? <>{stopIcon} STOP</> : <>{playIcon} PLAY</> }
+                { state.isPlaying ? <>{stopIcon} STOP</> : <>{playIcon} PLAY</> }
               </button>
               <div className="volume">
                 <input
@@ -130,7 +131,7 @@ function App() {
                   name="volume"
                   min="0"
                   max="1"
-                  value={viewState.volume}
+                  value={state.volume}
                   onChange={(event) => setVolume(event.currentTarget.valueAsNumber)}
                   step="0.05" />
                 <label htmlFor="volume">{volumeLabel}</label>
@@ -139,13 +140,13 @@ function App() {
 
           </div>
 
-          <div className="modes" inert={viewState.isPlaying}>
+          <div className="modes" inert={state.isPlaying}>
               <hr/>
               <div className="FormGroup">
               {MODES.map( (item, i) => {
                 return <button
                   key={i}
-                  className={item.value == viewState.mode ? 'selected' : 'unselected'}
+                  className={item.value == state.mode ? 'selected' : 'unselected'}
                   onClick={(_) => setMode(item.value)}
                 >
                   {item.label}
@@ -157,35 +158,56 @@ function App() {
             
         </section>
 
-        <section hidden={viewState.mode != MODE.CONSTANT}>
+        <section hidden={state.mode != MODE.CONSTANT}>
           <div className="ValueInputField-group">
             <label className="ValueInputField-label">Tempo</label>
-            <ValueInputField tempo={viewState.tempo} onTempoChange={setTempo} unit="bpm"/>
+            <ValueInputField tempo={state.tempo} onTempoChange={setTempo} unit="bpm"/>
           </div>          
         </section>
 
-        <section className="variation" inert={viewState.isPlaying}>
-          <div className="TempoInputRange" hidden={viewState.mode ==  MODE.CONSTANT}>
+        <section className="variation" inert={state.isPlaying}>
+          <div className="TempoInputRange" hidden={state.mode ==  MODE.CONSTANT}>
             <div className="ValueInputField-group">
               <label className="ValueInputField-label">Tempo de départ</label>
-              <ValueInputField tempo={viewState.tempoBegin} onTempoChange={setTempoBegin} unit="bpm"/>
+              <ValueInputField tempo={state.tempoBegin} onTempoChange={setTempoBegin} unit="bpm"/>
             </div>
             <div className="ValueInputField-group">
               <label className="ValueInputField-label">Tempo d'arrivée</label>
-              <ValueInputField  tempo={viewState.tempoEnd} onTempoChange={setTempoEnd} unit="bpm"/>
+              <ValueInputField  tempo={state.tempoEnd} onTempoChange={setTempoEnd} unit="bpm"/>
             </div>
           </div>
 
-          <div className="ValueInputField-group" hidden={viewState.mode ==  MODE.CONSTANT}>
-            <label className="ValueInputField-label">{ viewState.mode ==  MODE.INTERPOLATE_UP_AND_DOWN_FOREVER ? "Demi-période" : "Durée"} </label>
+          <div className="ValueInputField-group" hidden={state.mode ==  MODE.CONSTANT}>
+            <label className="ValueInputField-label">{ state.mode ==  MODE.INTERPOLATE_UP_AND_DOWN_FOREVER ? "Demi-période" : "Durée"} </label>
             <ValueInputField 
-              tempo={viewState.period}
+              tempo={state.period}
               onTempoChange={setPeriod}
               min={1} max={10*60} unit="sec"
             />
           </div>
         </section>
 
+        <section className="sequencer">
+
+          {state.sequencer.map( (seq, idx) => 
+            (<div key={`seq-${idx}`} className="sequencer-line">
+              <span >{seq.name}</span>
+              {seq.data.map( (n, step) => (
+                <button
+                  key={`${idx}-${step}`}
+                  className={ n == 1 ? 'sequencer-btn down' : 'sequencer-btn' }
+                  onClick={() => {
+                    const new_data = [...seq.data];
+                    new_data[step] = new_data[step] ? 0 : 1;
+                    replaceSequence({ name: seq.name, data: new_data })
+                  }}
+                >
+                </button>
+              ))}
+            </div>)
+          )}
+          
+        </section>
       </main>
 
       <footer>
