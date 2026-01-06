@@ -425,21 +425,33 @@ footer {
 .sequencer
 {
   display: grid;
+  row-gap: 2px;
 }
 
 .sequencer-line
 {
   display: grid;
+  border-radius: 4px;
   grid-template-columns: auto repeat(16, 16px);
-  align-items: center;
+  align-items: center;  
+  font-size: 0.75rem;
+  text-align: right;
+  background-color: #ffffff7c;
+  padding: 2px;
+
+  :first-child {
+    margin-right: 0.5rem;
+  }
 
   :nth-child(4n+2) {
-    filter: brightness(1.5)
+    filter: brightness(1.5);
   }
 }
 
 .sequencer-btn
 {
+  border-radius: 4px;
+  margin-right: 1px;
   border-color: rgb(219, 156, 255);
 
   &.down {
@@ -449,4 +461,10 @@ footer {
   &.current {
     filter: brightness(2);
   }
+}
+
+.advanced {
+  display: flex;
+  font-size: 0.75rem;
+  align-items: center;
 }

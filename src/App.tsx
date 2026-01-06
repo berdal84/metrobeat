@@ -1,6 +1,6 @@
 import { useMetronome } from "./Metronome/useMetronome"
 import packageJson from "../package.json"
-import { useCallback, useEffect, useMemo, type MouseEventHandler, type ReactNode } from "react"
+import { useCallback, useEffect, useMemo, useState, type MouseEventHandler, type ReactNode } from "react"
 import { ValueInputField } from "./ValueInputField"
 import { MODE, type Mode } from "./Metronome/Metronome"
 
@@ -22,9 +22,7 @@ import { MODE, type Mode } from "./Metronome/Metronome"
 
 const news = `
     Quoi de neuf?
-    - réorganisation de l'interface
-    - afficher le BPM courant
-    - mode accelerando: "période" => "durée", "tempo de fin" => "tempo d'arrivée".
+    - début de séquenceur avec trois sons (tick, snare, kick), hat et crash seraient intéressants.
   `
 
 const MODES: Array<{ value: Mode, label: ReactNode }> = [
@@ -111,6 +109,8 @@ function App() {
     return classes.join(" ");
 
   }, [state.step])
+
+  const [showSequencer, setShowSequencer] = useState(false)
 
   return (
     <div className="App">
@@ -201,8 +201,13 @@ function App() {
           </div>
         </section>
 
-        <section className="sequencer">
+        <section className="advanced">
+          <input id="sequencer-checkbox" type="checkbox" checked={showSequencer} onChange={() => setShowSequencer(v => !v)}/>
+          <label htmlFor="sequencer-checkbox">Afficher Séquenceur</label>
+        </section>
 
+        { showSequencer && <section className="sequencer">
+          <p style={{ fontSize: '0.75rem', opacity: 0.5 }}>Fonctionnalité en chantier...</p>
           {state.sequencer.map( (seq, idx) => 
             (<div key={`seq-${idx}`} className="sequencer-line">
               <span >{seq.soundId}</span>
@@ -221,7 +226,7 @@ function App() {
             </div>)
           )}
           
-        </section>
+        </section>}
       </main>
 
       <footer>
