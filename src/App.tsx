@@ -205,7 +205,7 @@ function App() {
 
           {state.sequencer.map( (seq, idx) => 
             (<div key={`seq-${idx}`} className="sequencer-line">
-              <span >{seq.name}</span>
+              <span >{seq.soundId}</span>
               {seq.data.map( (n, step) => (
                 <button
                   key={`${idx}-${step}`}
@@ -213,7 +213,7 @@ function App() {
                   onClick={() => {
                     const new_data = [...seq.data];
                     new_data[step] = new_data[step] ? 0 : 1;
-                    replaceSequence({ name: seq.name, data: new_data })
+                    replaceSequence({ soundId: seq.soundId, data: new_data })
                   }}
                 >
                 </button>

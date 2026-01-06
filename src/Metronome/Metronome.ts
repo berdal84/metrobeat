@@ -12,7 +12,7 @@ export type Mode = typeof MODE.CONSTANT
                  | typeof MODE.INTERPOLATE_UP_AND_DOWN_FOREVER;
 
 export type Sequence = {
-    name: 'tick' |'hit' | 'hat' | 'snare';
+    soundId: 'tick' |'kick' | 'snare';
     data: Array<number>;
 }
 
@@ -22,7 +22,9 @@ export type State = {
     tempo: number;
     tempoBegin: number;
     tempoEnd: number;
-    sound: Howl;
+    sound: {
+        [K in Sequence['soundId']]: Howl
+    };
     last_frame_time: DOMHighResTimeStamp;
     step: number;
     step_per_bar: number;
@@ -43,11 +45,6 @@ export type InitialState = EventChange;
 export function create( initialState: Partial<InitialState> = {} ): State
 {
 
-    const sound = new Howl({
-        src: ['tick_C.mp3'],
-        preload: true,
-    })
-
     const state: State = {
         volume: 0.5,
         step: 0,
@@ -57,7 +54,11 @@ export function create( initialState: Partial<InitialState> = {} ): State
         tempoBegin: 80,
         tempoEnd: 120,
         isPlaying: false,
-        sound,
+        sound: {
+            tick:  new Howl({src: ['tick_C.mp3'], preload: true }),
+            snare: new Howl({src: ['snare.mp3'], preload: true }),
+            kick:  new Howl({src: ['kick.mp3'], preload: true })
+        },
         next_step_delay: 0,
         last_frame_time: 0,
         requestAnimationFrameId: 0,
@@ -67,10 +68,9 @@ export function create( initialState: Partial<InitialState> = {} ): State
         variationDirection: 1,
         mode: 0,
         sequencer: [
-            { name: 'tick',  data: [1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0] },
-            { name: 'hat',   data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
-            { name: 'hit',   data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
-            { name: 'snare', data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
+            { soundId: 'tick',  data: [1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0,  1, 0, 0, 0] },
+            { soundId: 'snare', data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
+            { soundId: 'kick', data: [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0] },
         ],
         ...initialState
     }
@@ -89,7 +89,7 @@ export function play(state: State)
     if (state.mode != MODE.CONSTANT)
         set_tempo(state, state.tempoBegin);
 
-    state.sound.stereo(-0.2); // update loop will toggle pan's sign
+    state.sound.tick.stereo(-0.2); // update loop will toggle pan's sign
     loop(state);
     emit_change(state, { isPlaying: state.isPlaying});
 }
@@ -169,7 +169,7 @@ export function update(state: State, dt: number)
     
     if (state.step % state.step_per_bar == 0)
         flash_diode(state)
-    
+
     emit_change(state, { step: state.step })
 
     for ( const seq of state.sequencer)
@@ -177,11 +177,14 @@ export function update(state: State, dt: number)
         if ( seq.data[state.step] === 0 )
             continue;
 
-        // Alternate left/right pan
-        const pan = state.sound.stereo();
-        state.sound.stereo(-pan)
+        if (seq.soundId === 'tick')
+        {
+            // Alternate left/right pan
+            const pan = state.sound.tick.stereo();
+            state.sound.tick.stereo(-pan)            
+        }
 
-        state.sound.play()
+        state.sound[seq.soundId].play()
     }
 }
 
@@ -228,14 +231,15 @@ export function set_period(state: State, period: number)
 export function set_volume(state: State, volume: number)
 {
     state.volume = volume;
-    state.sound.volume(volume);
+    for (const each of Object.values(state.sound) )
+        each.volume(volume);
     emit_change(state, { volume })
 }
 
 export function replace_sequence(state: State, seq: Sequence)
 {
     console.assert(seq.data.length === state.bar_per_seq * state.step_per_bar );
-    const existing = state.sequencer.findIndex( s => s.name === seq.name );
+    const existing = state.sequencer.findIndex( s => s.soundId === seq.soundId );
 
     if (existing === -1)
     {
