@@ -432,11 +432,21 @@ footer {
   display: grid;
   grid-template-columns: auto repeat(16, 16px);
   align-items: center;
+
+  :nth-child(4n+2) {
+    filter: brightness(1.5)
+  }
 }
 
 .sequencer-btn
 {
+  border-color: rgb(219, 156, 255);
+
   &.down {
-    background-color: rgb(172, 0, 246);
+    background-color: rgb(151, 70, 186);
+  }
+
+  &.current {
+    filter: brightness(2);
   }
 }

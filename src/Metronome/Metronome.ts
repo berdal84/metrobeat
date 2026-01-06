@@ -37,7 +37,7 @@ export type State = {
     sequencer: Array<Sequence>;
 }
 
-export type EventChange =  Partial<Pick<State, 'sequencer' | 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
+export type EventChange =  Partial<Pick<State, 'step' | 'sequencer' | 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
 
 export type InitialState = EventChange;
 export function create( initialState: Partial<InitialState> = {} ): State
@@ -161,14 +161,17 @@ export function update(state: State, dt: number)
 
     // From here, we know we just entered next step
 
-    flash_diode(state)
-
     const barDelay = 60 / (state.tempo * state.step_per_bar) * 1000;
     state.next_step_delay =  state.next_step_delay - dt + barDelay;
 
     const totalBarCount = state.step_per_bar * state.bar_per_seq;
     state.step = (state.step+1) % totalBarCount;
     
+    if (state.step % state.step_per_bar == 0)
+        flash_diode(state)
+    
+    emit_change(state, { step: state.step })
+
     for ( const seq of state.sequencer)
     {
         if ( seq.data[state.step] === 0 )

@@ -13,7 +13,8 @@ type MetroViewState = Pick<
   'tempoBegin' | 
   'tempoEnd' |
   'period' |
-  'sequencer'
+  'sequencer' |
+  'step'
 >
 
 const DEFAULT_VIEW_STATE: MetroViewState = {
@@ -25,6 +26,7 @@ const DEFAULT_VIEW_STATE: MetroViewState = {
   mode: 0,
   diodeOn: false,
   period: 60,
+  step: 0
 }
 
 // Headless metronome
@@ -46,8 +48,8 @@ export function useMetronome( initialState: Partial<metro.InitialState> = {})
   useEffect(() => {
 
     // TODO: this could be an event emitted by the metronome, like onInit()
-    const { sequencer, isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period, volume } = metronome;
-    setState({ sequencer, isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period, volume })
+    const { step, sequencer, isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period, volume } = metronome;
+    setState({ step, sequencer, isPlaying, tempo, tempoBegin, tempoEnd, mode, diodeOn, period, volume })
 
     metronome.onChange = (changes) => {
       console.log('State changes:', changes)

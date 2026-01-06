@@ -98,6 +98,20 @@ function App() {
     return `Vol ${Math.round(state.volume*100)}%`
   }, [state.volume])
 
+  const getSequencerBtnClassName = useCallback((value: number, step: number) => {
+
+    const classes = ['sequencer-btn'];
+
+    if (value == 1)
+      classes.push('down');
+    
+    if (step == state.step)
+      classes.push('current');
+
+    return classes.join(" ");
+
+  }, [state.step])
+
   return (
     <div className="App">
 
@@ -195,7 +209,7 @@ function App() {
               {seq.data.map( (n, step) => (
                 <button
                   key={`${idx}-${step}`}
-                  className={ n == 1 ? 'sequencer-btn down' : 'sequencer-btn' }
+                  className={getSequencerBtnClassName(n, step)}
                   onClick={() => {
                     const new_data = [...seq.data];
                     new_data[step] = new_data[step] ? 0 : 1;
