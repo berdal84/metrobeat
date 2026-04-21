@@ -8,13 +8,9 @@
   --border-color-primary: rgb(128, 106, 124);
   --border-color-secondary: rgba(251, 167, 252, 0.91);
   --text-primary: rgb(31, 24, 24) ;
-  --text-secondary: #fff;
+  --text-secondary: #fffffff5;
   --text-size-sm: 0.75rem;
   --gap-1: 2px;
   --gap-2: 4px;
   --gap-3: 16px;
-}
-
-a, p, h1, h2, h3, h4, h5, h6 {
-  color: var(--text-primary);
 }

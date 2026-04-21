@@ -4,6 +4,10 @@ html {
   background-color: var(--bg-html-color);
 }
 
+a, p, h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
 .text-primary {
   color: var(--text-primary);
 }
@@ -38,7 +42,7 @@ html {
 
 
 header {
-  background: linear-gradient(10deg, rgb(148, 74, 74), rgb(68, 34, 108));
+  background: linear-gradient(10deg, rgb(201, 128, 128), rgb(157, 111, 183));
   border-bottom: solid 1px var(--border-color-primary);
   text-align: left;
   padding-left: 1rem;
