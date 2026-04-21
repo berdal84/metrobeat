@@ -115,7 +115,7 @@ function App() {
         <section className="controls">
 
           {/* MAIN CONTROLS */}
-          <div className="controls-main">
+          <div className="controls-main flex-col-sm">
             
             {/* BPM DISPLAY */}
             <div className="bpm-display">
@@ -127,7 +127,7 @@ function App() {
             </div>
 
             {/* PLAY/PAUSE and VOLUME */}
-            <div className="flex-col">
+            <div className="flex-col flex-row-sm">
               <button className='play-button' onClick={handlePlayButtonClick}>
                 { state.isPlaying ? <><StopIcon/> STOP</> : <><PlayIcon/> PLAY</> }
               </button>

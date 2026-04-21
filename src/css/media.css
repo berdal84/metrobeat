@@ -1,9 +1,11 @@
-@media only screen and (max-device-width : 350px)
+@media only screen and (max-device-width: 300px)
 {
   .full-page-sm {
     width: 100vw;
     height: 100vh;
     margin: unset;
+
+    transition: all 100ms;
   }
 
   .no-border-radius-sm {
@@ -13,5 +15,15 @@
 
   .display-none-sm {
     display: none;
+  }
+
+  .flex-col-sm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flex-row-sm {
+    display: flex;
+    flex-direction: row;
   }
 }

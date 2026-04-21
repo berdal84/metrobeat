@@ -14,8 +14,9 @@
   border: 1px solid var(--border-color-primary);
   display: flex;
   flex-direction: column;
-  gap: 5px;
   margin-top: 20px;
+  width: 300px;
+  height: auto;
 }
 
 .controls {
@@ -96,8 +97,6 @@ section.variation {
   }
 }
 
-
-
 .tempo-range {
   display: flex;
   gap: var(--gap-3)
@@ -105,12 +104,10 @@ section.variation {
 
 .play-button
 {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
+  height: 48px;
 
   svg {
-    height: 24px;
+    height: 40px;
   }
 }
 
@@ -156,13 +153,15 @@ section.variation {
 
 .ValueInputField {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: stretch;
 
   button {
     display: flex;
-
+    flex: auto;
     &::after {
-      height: 5%;
-      font-size: 0.8rem;
+      font-size: 4px;
     }
   }
 
@@ -171,14 +170,17 @@ section.variation {
       height: 75%;
     }
   }
-  button:first-child, button:last-child {
+  
+  button:first-child,
+  button:last-child {
     &::after {
       height: 5%;
       font-size: 0.8rem;
     }
   }
 
-  button:nth-child(2), button:nth-last-child(2)  {
+  button:nth-child(2),
+  button:nth-last-child(2)  {
     &::after {
       height: 5%;
       font-size: 1rem;
@@ -199,13 +201,14 @@ section.variation {
   .ValueInputField-input {
     text-align: right;
     border-radius: 0;
-    max-width: 4rem;
+    max-width: 3rem;
   }
 
   .ValueInputField-unit {
     background-color: white;
     color: #b0b0b0;
     padding: 0.1rem;
+    font-size: 0.75rem;
     border-radius: 0;
   }
 }
@@ -217,24 +220,26 @@ section.variation {
 
 .volume {
   display: flex;
-  justify-content: space-around;
-  height: 2rem;
-  align-items: center;
+  flex-direction: column;
+  align-content: start;
+  align-items: start;
+  height: 5px;
+  padding: 10px 10px 10px 10px;
+  row-gap: 5px;
   border-radius: var(--border-radius);
 
   label {
     color: var(--text-primary);
     font-size: var(--text-size-sm);
-    text-align: center;
-    flex: auto;
     padding-left: 6px;
+    height: 20px;
   }
 
   input[type=range] {
     flex: 1;
     appearance: none;
     height: 2px;
-    max-width: 75%;
+    width: 100%;
     border-radius: 10px;
   }
 
@@ -270,7 +275,6 @@ section.variation {
     margin: unset;
     transition: all 0.05s;
     text-align: right;
-    min-width: 180px;
 
     &.disabled
     {
