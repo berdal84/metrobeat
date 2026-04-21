@@ -10,4 +10,8 @@
     border-radius: 0;
     border: unset;
   }
+
+  .display-none-sm {
+    display: none;
+  }
 }

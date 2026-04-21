@@ -36,7 +36,7 @@ const MODES: Array<{ value: Mode, label: ReactNode }> = [
     label:
       <div className="d-flex">
         <UpIcon/>
-        <span>Accelerando</span>
+        <span className="display-none-sm">Accelerando</span>
       </div>
   },
   {
@@ -44,7 +44,7 @@ const MODES: Array<{ value: Mode, label: ReactNode }> = [
     label:
       <div className="d-flex">
         <UpDownIcon/>
-        <span>Yoyo</span>
+        <span className="display-none-sm">Yoyo</span>
       </div>
   },
 ]
