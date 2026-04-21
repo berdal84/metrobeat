@@ -4,10 +4,42 @@ html {
   background-color: var(--bg-html-color);
 }
 
-header {
-  background: linear-gradient(45deg, rgb(255, 237, 237), rgba(0, 0, 0, 0));
-  font-size: 25pt;
+.text-primary {
   color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-sm {
+  font-size: 0.3em;
+  margin-left: 5px;
+}
+
+.text-xxl {
+  font-size: 3rem;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.gap-1 {
+  gap: var(--gap-1);
+}
+
+.row-gap-1 {
+  row-gap: var(--gap-1);
+}
+
+
+header {
+  background: linear-gradient(10deg, rgb(148, 74, 74), rgb(68, 34, 108));
+  border-bottom: solid 1px var(--border-color-primary);
   text-align: left;
   padding-left: 1rem;
 }
@@ -61,4 +93,8 @@ footer {
 [inert] {
   /* visibility: hidden; */
   filter: opacity(0.75);
+}
+
+.box-shadow {
+  box-shadow: 0px 4px 4px rgba(89, 21, 47, 0.415);
 }

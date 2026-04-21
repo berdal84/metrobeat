@@ -102,11 +102,11 @@ function App() {
   const [showSequencer, setShowSequencer] = useState(false)
 
   return (
-    <div className="App full-page-sm no-border-radius-sm">
+    <div className="App box-shadow full-page-sm no-border-radius-sm">
 
-      <header>
+      <header className="text-secondary text-xxl">
         Métronome
-        <span className="version">v{packageJson.version}</span>
+        <span className="text-sm">v{packageJson.version}</span>
       </header>
 
       <main>
@@ -227,7 +227,7 @@ function App() {
         </section>}
       </main>
 
-      <footer>
+      <footer className="row gap-1 row-gap-1">
         <span onClick={handleVersionClick} className="what-s-new">Quoi d'neuf sur la v{packageJson.version}?</span>
         <span><a href="https://berenger.42borgata.com">Bérenger Dalle-Cort</a>, {(new Date()).getFullYear()}.</span>
       </footer>

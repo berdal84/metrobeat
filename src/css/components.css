@@ -10,7 +10,6 @@
   background: linear-gradient(0deg, #f4bebe, #99a0ef);
   border-radius: var(--border-radius);
   text-align: center;
-  box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
   overflow: hidden;
   border: 1px solid var(--border-color-primary);
   display: flex;
@@ -131,13 +130,6 @@ section.variation {
     background-color: red;
     box-shadow: 0 0 10px red;
   }
-}
-
-
-.version {
-  font-size: 0.3em;
-  margin-left: 5px;
-  color: rgba(0, 0, 0, 0.245);
 }
 
 .divider {
