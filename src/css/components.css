@@ -49,9 +49,7 @@
 
   hr {
     flex: auto;
-    height: 1px;
-    background-color: var(--bg-color-secondary);
-    border: none;
+    width: unset;
     transform: translateY(3px);
   }
 }

@@ -8,6 +8,22 @@ a, p, h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
+hr {
+  height: 1px;
+  width: 100%;
+  background-color: var(--bg-color-secondary);
+  border: none;
+}
+
+.full-height {
+  flex: 1
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
 .text-primary {
   color: var(--text-primary);
 }
