@@ -220,6 +220,7 @@ function App() {
 
       <footer>
         <span onClick={handleVersionClick} className="what-s-new">Quoi d'neuf sur la v{packageJson.version}?</span>
+        <span><a href="https://berenger.42borgata.com">Bérenger Dalle-Cort</a>, {(new Date()).getFullYear()}.</span>
       </footer>
     </div>
   )
