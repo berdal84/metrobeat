@@ -111,10 +111,13 @@ function App() {
 
       <main>
 
+        {/* CONTROLS */}
         <section className="controls">
 
+          {/* MAIN CONTROLS */}
           <div className="controls-main">
             
+            {/* BPM DISPLAY */}
             <div className="bpm-display">
               <div className={ state.diodeOn ? 'diode diode-on' : 'diode' }/>
               <p className={`value ${!state.isPlaying ? 'disabled' : ''}`}>
@@ -123,6 +126,7 @@ function App() {
               </p>
             </div>
 
+            {/* PLAY/PAUSE and VOLUME */}
             <div className="flex-col">
               <button className='play-button' onClick={handlePlayButtonClick}>
                 { state.isPlaying ? <><StopIcon/> STOP</> : <><PlayIcon/> PLAY</> }
@@ -143,6 +147,7 @@ function App() {
 
           </div>
 
+          {/* MODES RADIO BUTTONS */}
           <div className="modes" inert={state.isPlaying}>
               <hr/>
               <div className="FormGroup">
@@ -161,6 +166,7 @@ function App() {
             
         </section>
 
+        {/* CONSTANT SPECIFIC CONTROLS */}
         <section hidden={state.mode != MODE.CONSTANT}>
           <div className="ValueInputField-group">
             <label className="ValueInputField-label">Tempo</label>
@@ -168,6 +174,7 @@ function App() {
           </div>          
         </section>
 
+        {/* NON-CONSTANT SPECIFIC CONTROLS */}        
         <section className="variation" inert={state.isPlaying}>
           <div className="TempoInputRange" hidden={state.mode ==  MODE.CONSTANT}>
             <div className="ValueInputField-group">
@@ -190,11 +197,13 @@ function App() {
           </div>
         </section>
 
+        {/* SHOW/HIDE SEQUENCER CHECKBOX */}
         <section className="advanced">
           <input id="sequencer-checkbox" type="checkbox" checked={showSequencer} onChange={() => setShowSequencer(v => !v)}/>
           <label htmlFor="sequencer-checkbox">Afficher Séquenceur</label>
         </section>
 
+        {/* SEQUENCER (WIP) */}
         { showSequencer && <section className="sequencer">
           <p style={{ fontSize: '0.75rem', opacity: 0.5 }}>Fonctionnalité en chantier...</p>
           {state.sequencer.map( (seq, idx) => 
