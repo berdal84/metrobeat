@@ -18,8 +18,8 @@
 //--------------------------------------------------------------------------------
 
 import { Howl } from 'howler'
-import { clamp } from '../../utils/math';
-import type { UnionFromValuesOf } from '../../utils/metaprogramming';
+import { clamp } from '@metro/utils/math';
+import type { UnionFromValuesOf } from '@metro/utils/metaprogramming';
 
 export const MODE = {
     CONSTANT: 0,

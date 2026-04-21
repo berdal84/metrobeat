@@ -4,7 +4,7 @@
 @import "css/base.css"          layer(base);
 @import "css/theme.css"         layer(theme);
 @import "css/components.css"    layer(components);
-@import "css/media.css"         layer (media);
+@import "css/media.css"         layer(media);
 
 /* Specify priorities (first layers are applied first) */
 @layer reset, base, theme, components, media;

@@ -1,9 +1,9 @@
-import { useMetronome } from "./components/metronome/useMetronome"
-import packageJson from "../package.json"
+import packageJson from "@metro/../package.json"
 import { useCallback, useEffect, useMemo, useState, type MouseEventHandler, type ReactNode } from "react"
-import { ValueInputField } from "./components/ValueInputField"
-import { MODE, type Mode } from "./components/Metronome/Metronome"
-import { UpIcon, UpDownIcon, StopIcon, PlayIcon } from "./components/Icons"
+import { useMetronome } from "@metro/components/metronome/useMetronome"
+import { MODE, type Mode } from "@metro/components/metronome/Metronome"
+import { ValueInputField } from "@metro/components/ValueInputField"
+import { UpIcon, UpDownIcon, StopIcon, PlayIcon } from "@metro/components/Icons"
 
 // TODO LIST
 //

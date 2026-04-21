@@ -1,6 +1,5 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
-import * as metro from "./Metronome";
-import type { Sequence } from "./Metronome";
+import * as metro from "@metro/components/metronome/Metronome";
 
 // State with the field we might want to display
 type MetroViewState = Pick<
@@ -43,7 +42,7 @@ export function useMetronome( initialState: Partial<metro.InitialState> = {})
   const stop     = useCallback( () => metro.stop(metronome), [] )
   const setPeriod = useCallback( (value: number) => metro.set_period(metronome, value), [])
   const setVolume = useCallback( (value: number) => metro.set_volume(metronome, value), [])
-  const replaceSequence = useCallback( (seq: Sequence) => { metro.replace_sequence(metronome, seq); }, [] )
+  const replaceSequence = useCallback( (seq: metro.Sequence) => { metro.replace_sequence(metronome, seq); }, [] )
 
   useEffect(() => {
 
