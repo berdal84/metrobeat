@@ -1,0 +1,13 @@
+@media only screen and (max-device-width : 350px)
+{
+  .full-page-sm {
+    width: 100vw;
+    height: 100vh;
+    margin: unset;
+  }
+
+  .no-border-radius-sm {
+    border-radius: 0;
+    border: unset;
+  }
+}

@@ -1,9 +1,9 @@
-import { useMetronome } from "./Metronome/useMetronome"
+import { useMetronome } from "./components/metronome/useMetronome"
 import packageJson from "../package.json"
 import { useCallback, useEffect, useMemo, useState, type MouseEventHandler, type ReactNode } from "react"
-import { ValueInputField } from "./ValueInputField"
-import { MODE, type Mode } from "./Metronome/Metronome"
-import { UpIcon, UpDownIcon, StopIcon, PlayIcon } from "./Icons"
+import { ValueInputField } from "./components/ValueInputField"
+import { MODE, type Mode } from "./components/Metronome/Metronome"
+import { UpIcon, UpDownIcon, StopIcon, PlayIcon } from "./components/Icons"
 
 // TODO LIST
 //
@@ -102,7 +102,7 @@ function App() {
   const [showSequencer, setShowSequencer] = useState(false)
 
   return (
-    <div className="App">
+    <div className="App full-page-sm no-border-radius-sm">
 
       <header>
         Métronome

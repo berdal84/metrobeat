@@ -1,5 +1,5 @@
 import { useCallback, type ChangeEvent, type HTMLAttributes } from "react";
-import { clamp } from "./tools";
+import { clamp } from "../utils/math";
 
 const PlusIcon = () => {
   return(

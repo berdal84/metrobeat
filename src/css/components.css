@@ -1,0 +1,354 @@
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+}
+
+.App {
+  background: linear-gradient(0deg, #f4bebe, #99a0ef);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(89, 21, 47, 0.415);
+  overflow: hidden;
+  border: 1px solid var(--border-color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: var(--gap-3);
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.controls-main
+{
+  display: grid;
+  grid-template-columns: auto 100px;
+  gap: var(--gap-2)
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.modes {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+
+  button {
+    height: 1.5rem;
+  }
+
+  hr {
+    flex: auto;
+    height: 1px;
+    background-color: var(--bg-color-secondary);
+    border: none;
+    transform: translateY(3px);
+  }
+}
+
+section.variation {
+  display: grid;
+  gap: var(--gap-3);
+  align-items: start;
+  grid-template-columns: 1fr ;
+}
+
+.ValueInputFieldRange {
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+
+  .ValueInputField {
+    margin-top: var(--gap-2);
+  }
+}
+
+.FormGroup {
+  display: flex;
+
+  * {
+    border-radius: 0;
+  }
+
+  button {
+    font-size: 0.8rem;
+  }
+
+  &:not(:last-child) {
+    border-right-width: 0;
+  }
+
+  :first-child {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+  }
+
+  :last-child {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+}
+
+
+
+.tempo-range {
+  display: flex;
+  gap: var(--gap-3)
+}
+
+.play-button
+{
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+
+  svg {
+    height: 24px;
+  }
+}
+
+.diode {
+  background-color: rgb(101, 16, 74);
+  filter: drop-shadow(0 0 10px rgb(168, 80, 80));
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  border: 2px solid rgba(196, 156, 247, 0.424);
+  margin: 4px;
+
+  &.diode-on
+  {
+    background-color: red;
+    box-shadow: 0 0 10px red;
+  }
+}
+
+
+.version {
+  font-size: 0.3em;
+  margin-left: 5px;
+  color: rgba(0, 0, 0, 0.245);
+}
+
+.divider {
+  height: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.286);
+}
+
+.ValueInputField-group {
+  filter: drop-shadow(-1px 2px 2px rgba(1, 151, 185, 0.575))
+}
+
+.ValueInputField-label {
+  background-color: rgb(251, 190, 255);
+  margin-top: 5px;
+  margin-bottom: -5px;
+  padding: 0.2rem;
+  padding-left: 0.4rem;
+  padding-bottom: calc(0.2rem + 5px);
+  justify-self: left;
+  min-width: 25%;
+  max-width: 50%;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  font-size: 0.8rem;
+}
+
+.ValueInputField {
+  display: flex;
+
+  button {
+    display: flex;
+
+    &::after {
+      height: 5%;
+      font-size: 0.8rem;
+    }
+  }
+
+  button {
+    :first-child {
+      height: 75%;
+    }
+  }
+  button:first-child, button:last-child {
+    &::after {
+      height: 5%;
+      font-size: 0.8rem;
+    }
+  }
+
+  button:nth-child(2), button:nth-last-child(2)  {
+    &::after {
+      height: 5%;
+      font-size: 1rem;
+    }
+    border-radius: unset
+  }
+
+  button span {
+    font-size: 0.9rem;
+    margin-top: auto;
+  }
+
+  .ValueInputField-div {
+    display: flex;
+    border: 1px solid rgba(251, 167, 252, 0.91);
+  }
+  
+  .ValueInputField-input {
+    text-align: right;
+    border-radius: 0;
+    max-width: 4rem;
+  }
+
+  .ValueInputField-unit {
+    background-color: white;
+    color: #b0b0b0;
+    padding: 0.1rem;
+    border-radius: 0;
+  }
+}
+
+.what-s-new {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.volume {
+  display: flex;
+  justify-content: space-around;
+  height: 2rem;
+  align-items: center;
+  border-radius: var(--border-radius);
+
+  label {
+    color: var(--text-primary);
+    font-size: var(--text-size-sm);
+    text-align: center;
+    flex: auto;
+    padding-left: 6px;
+  }
+
+  input[type=range] {
+    flex: 1;
+    appearance: none;
+    height: 2px;
+    max-width: 75%;
+    border-radius: 10px;
+  }
+
+  input[type=range]:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+
+  input[type=range]::-webkit-slider-thumb
+  {
+    -webkit-appearance: none;
+    border: 1px solid #000000;
+    width: 40px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--bg-color-primary);
+    cursor: pointer;
+  }
+}
+
+.bpm-display
+{
+  display: grid;
+  background-color: #8b3f8b6e;
+  border-radius: 5px;
+  height: 100%;
+  grid-template-columns: 10px auto 10px;
+
+  .value
+  {
+    /* filter: drop-shadow(1px 2px 1px rgba(255, 155, 178, 0.765)); */
+    color: rgb(249, 225, 254);
+    font-size: 6rem;
+    margin: unset;
+    transition: all 0.05s;
+    text-align: right;
+    min-width: 180px;
+
+    &.disabled
+    {
+      opacity: 0.2;
+    }
+
+    .unit
+    {
+      font-size: 2rem;
+    }
+  }
+}
+
+.flex-col
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row
+{
+  display: flex;
+  flex-direction: row;
+}
+
+.sequencer
+{
+  display: grid;
+  row-gap: 2px;
+}
+
+.sequencer-line
+{
+  display: grid;
+  border-radius: 4px;
+  grid-template-columns: auto repeat(16, 16px);
+  align-items: center;  
+  font-size: 0.75rem;
+  text-align: right;
+  background-color: #ffffff7c;
+  padding: 2px;
+
+  :first-child {
+    margin-right: 0.5rem;
+  }
+
+  :nth-child(4n+2) {
+    filter: brightness(1.5);
+  }
+}
+
+.sequencer-btn
+{
+  border-radius: 4px;
+  margin-right: 1px;
+  border-color: rgb(219, 156, 255);
+
+  &.down {
+    background-color: rgb(151, 70, 186);
+  }
+
+  &.current {
+    filter: brightness(2);
+  }
+}
+
+.advanced {
+  display: flex;
+  font-size: 0.75rem;
+  align-items: center;
+}

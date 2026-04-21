@@ -1,0 +1,20 @@
+:root {
+  --bg-html-color: #3d3d3f;
+  --bg-color-primary: rgb(34, 35, 47);
+  --bg-color-secondary: rgb(153, 142, 195);
+  --btn-color: rgba(34, 35, 47, 0.939);
+  --btn-color-hover: rgba(62, 64, 86, 0.939);
+  --border-radius: 5px;
+  --border-color-primary: rgb(87, 7, 75);
+  --border-color-secondary: rgba(251, 167, 252, 0.91);
+  --text-primary: rgb(31, 24, 24) ;
+  --text-secondary: #fff;
+  --text-size-sm: 0.75rem;
+  --gap-1: 2px;
+  --gap-2: 4px;
+  --gap-3: 16px;
+}
+
+a, p, h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
