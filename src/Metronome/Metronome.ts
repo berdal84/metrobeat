@@ -1,15 +1,33 @@
+//--------------------------------------------------------------------------------
+//
+// Métronome
+// 
+// I try here to follow the C-style programming API:
+// - Some data as a regular object (see State or Event)
+// - Several functions that can transform the data (ex: set_mode(state, ...) )
+//
+// When importing this module, the idea is to use this syntax:
+//
+//      import * as metro from "./Metronome";
+//
+// So the API calls looks like that:
+//
+//      metro.set_mode(state, ...)
+//
+// Bérenger.
+//--------------------------------------------------------------------------------
+
 import { Howl } from 'howler'
 import { clamp } from '../tools';
+import type { UnionFromValuesOf } from '../utils/utils';
 
 export const MODE = {
-    CONSTANT    : 0,
+    CONSTANT: 0,
     INTERPOLATE_UP_AND_HOLD : 1,
     INTERPOLATE_UP_AND_DOWN_FOREVER: 2,
 } as const
 
-export type Mode = typeof MODE.CONSTANT
-                 | typeof MODE.INTERPOLATE_UP_AND_HOLD
-                 | typeof MODE.INTERPOLATE_UP_AND_DOWN_FOREVER;
+export type Mode = UnionFromValuesOf<typeof MODE>;
 
 export type Sequence = {
     soundId: 'tick' |'kick' | 'snare';
@@ -39,7 +57,21 @@ export type State = {
     sequencer: Array<Sequence>;
 }
 
-export type EventChange =  Partial<Pick<State, 'step' | 'sequencer' | 'volume' | 'mode'| 'isPlaying' | 'tempo' |  'tempoBegin' | 'tempoEnd' | 'diodeOn' | 'period'>>
+export type EventChange = 
+    Partial<
+        Pick<State,
+            'step'
+            | 'sequencer'
+            | 'volume'
+            | 'mode'
+            | 'isPlaying'
+            | 'tempo'
+            |  'tempoBegin'
+            | 'tempoEnd'
+            | 'diodeOn'
+            | 'period'
+        >
+    >
 
 export type InitialState = EventChange;
 export function create( initialState: Partial<InitialState> = {} ): State
